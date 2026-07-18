@@ -1,0 +1,640 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Home | ShareYou</title>
+  <meta name="description" content="ShareYou — your AI-guided learning dashboard. Track streaks, XP, and pick up where you left off." />
+  <link rel="icon" type="image/svg+xml" href="favicon.svg" />
+  <!-- assets share one cache token ?v=N — bump it on every link/script together when updating -->
+  <link rel="stylesheet" href="styles.css?v=23" />
+  <link rel="stylesheet" href="home.css?v=32" />
+  <link rel="stylesheet" href="membership.css?v=1" />
+</head>
+<body data-title-en="Home | ShareYou" data-title-zh="首页 | ShareYou">
+  <!-- shared SVG gradient defs (referenced by every deck card) -->
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <defs>
+      <radialGradient id="hCore" cx="50%" cy="48%" r="52%">
+        <stop offset="0%" stop-color="#fff"/><stop offset="52%" stop-color="#fff"/>
+        <stop offset="72%" stop-color="#eef2ff"/><stop offset="100%" stop-color="#dfe7ff" stop-opacity="0"/>
+      </radialGradient>
+      <linearGradient id="hRing" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%" stop-color="#aebdfb"/><stop offset="100%" stop-color="#5468ee"/>
+      </linearGradient>
+      <linearGradient id="hGem" x1="0" y1="0" x2="0.3" y2="1">
+        <stop offset="0%" stop-color="#86d957"/><stop offset="100%" stop-color="#b6e80a"/>
+      </linearGradient>
+      <linearGradient id="hex" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0%" stop-color="#8f7bf0"/><stop offset="50%" stop-color="#e08fc8"/><stop offset="100%" stop-color="#f6ad5d"/>
+      </linearGradient>
+    </defs>
+  </svg>
+
+  <!-- ===== Top navigation ===== -->
+  <header class="nav">
+    <div class="nav__inner">
+      <div class="nav__left">
+        <a href="home.html" class="logo" aria-label="ShareYou home">
+          <svg class="logo__mark" viewBox="14 24 92 66" aria-hidden="true">
+            <g transform="translate(20,30) scale(1.3) translate(-8,-9)">
+              <circle cx="29" cy="30" r="21" fill="none" stroke="#6f5be6" stroke-width="3.2"/>
+              <circle cx="49" cy="30" r="21" fill="none" stroke="#1ba8b5" stroke-width="3.2"/>
+              <circle cx="39" cy="30" r="5.4" fill="#15181d"/>
+            </g>
+          </svg>
+          <span class="logo__text">ShareYou</span>
+        </a>
+        <nav class="nav__links">
+          <a href="home.html" class="nav__link is-active">
+            <svg class="ico" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M3 11.5 12 4l9 7.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M5 10v9a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            <span data-i18n="nav.home">Home</span>
+          </a>
+          <a href="index.html" class="nav__link">
+            <svg class="ico" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <rect x="5" y="4" width="14" height="17" rx="2" stroke="currentColor" stroke-width="2"/>
+              <path d="M9 4h6v2a1 1 0 0 1-1 1h-4a1 1 0 0 1-1-1V4Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+              <path d="m8.5 13 2 2 4-4.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            <span data-i18n="nav.courses">Courses</span>
+          </a>
+          <a href="teacher.html" class="nav__link">
+            <svg class="ico" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M8 10a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z" stroke="currentColor" stroke-width="2"/>
+              <path d="M16 11a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5Z" stroke="currentColor" stroke-width="2"/>
+              <path d="M3.5 20a4.5 4.5 0 0 1 9 0" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              <path d="M13 19a3.8 3.8 0 0 1 7.5 0" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+            <span data-i18n="nav.admin">Admin</span>
+          </a>
+        </nav>
+      </div>
+
+      <div class="nav__right">
+        <button class="sy-lang" data-sy-lang type="button" aria-label="Switch language / 切换语言">
+          <span class="sy-lang__seg" data-l="en">EN</span><span class="sy-lang__seg" data-l="zh">中</span>
+        </button>
+        <a href="#membershipModal" class="btn-premium" data-membership-open><span data-i18n="nav.premium">Go Premium</span></a>
+        <div class="stat-pill" title="Lessons completed">
+          <span class="stat__num" data-sy="gems">0</span>
+          <svg class="stat__ico" viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M5 4h14l3 5-10 12L2 9l3-5Z" fill="#F5A623"/>
+            <path d="M5 4h14l3 5H2l3-5Z" fill="#F8C063"/>
+            <path d="m12 21 4.5-12H7.5L12 21Z" fill="#E8901B"/>
+          </svg>
+        </div>
+        <div class="stat-pill" title="Day streak">
+          <span class="stat__num" data-sy="streak">2</span>
+          <svg class="stat__ico" viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M13 2 4 14h6l-1 8 9-12h-6l1-8Z" fill="#9FE020"/>
+          </svg>
+        </div>
+        <div class="menu">
+          <button class="hamburger" aria-label="Menu" aria-haspopup="true" aria-expanded="false">
+            <span></span><span></span><span></span>
+          </button>
+          <div class="menu__dropdown" role="menu" hidden>
+            <a href="#" class="menu__item" role="menuitem" data-i18n="menu.settings" data-soon="Settings are coming soon" data-soon-zh="设置功能敬请期待">Settings</a>
+            <a href="#" class="menu__item" role="menuitem" data-i18n="menu.about" data-soon="About ShareYou — coming soon" data-soon-zh="关于 ShareYou — 敬请期待">About</a>
+            <a href="#" class="menu__item" role="menuitem" data-i18n="menu.help" data-soon="Help center — coming soon" data-soon-zh="帮助中心 — 敬请期待">Help</a>
+            <div class="menu__divider"></div>
+            <a href="#" class="menu__item" role="menuitem" data-i18n="menu.logout" data-action="logout">Log out</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- ===== Dashboard ===== -->
+  <main class="home">
+    <div class="home__grid">
+
+      <!-- Left column -->
+      <div class="home__left">
+        <div class="search">
+          <svg class="search__ico" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="2"/>
+            <path d="m20 20-3.5-3.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+          <input type="text" placeholder="What do you want to learn?" data-i18n-ph="search.ph" aria-label="Search" />
+          <button class="search__ask" data-i18n="search.ask">Ask</button>
+        </div>
+
+        <!-- Your progress: streak + leagues grouped into one card -->
+        <div class="card progress">
+          <div class="streak">
+            <div class="streak__top">
+              <div class="streak__count"><span data-sy="streak">2</span>
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M13 2 4 14h6l-1 8 9-12h-6l1-8Z" fill="#9FE020"/></svg>
+              </div>
+              <div class="streak__freezes"><span class="streak__freeze"></span><span class="streak__freeze"></span></div>
+            </div>
+            <div class="streak__days">
+              <div class="day is-done"><span class="day__dot"><svg viewBox="0 0 24 24"><path d="M13 2 4 14h6l-1 8 9-12h-6l1-8Z" fill="#1a1a1a"/></svg></span><span class="day__label">T</span></div>
+              <div class="day is-done is-today"><span class="day__dot"><svg viewBox="0 0 24 24"><path d="M13 2 4 14h6l-1 8 9-12h-6l1-8Z" fill="#1a1a1a"/></svg></span><span class="day__label">W</span></div>
+              <div class="day"><span class="day__dot"><svg viewBox="0 0 24 24"><path d="M13 2 4 14h6l-1 8 9-12h-6l1-8Z" fill="#d9d9d9"/></svg></span><span class="day__label">Th</span></div>
+              <div class="day"><span class="day__dot"><svg viewBox="0 0 24 24"><path d="M13 2 4 14h6l-1 8 9-12h-6l1-8Z" fill="#d9d9d9"/></svg></span><span class="day__label">F</span></div>
+              <div class="day"><span class="day__dot"><svg viewBox="0 0 24 24"><path d="M13 2 4 14h6l-1 8 9-12h-6l1-8Z" fill="#d9d9d9"/></svg></span><span class="day__label">S</span></div>
+            </div>
+            <div class="daily-goal">
+              <div class="daily-goal__head">
+                <span data-i18n="goal.title">Today's learning goal</span>
+                <strong data-i18n="goal.value">1 / 2 lessons</strong>
+              </div>
+              <div class="daily-goal__bar" data-progress="50" aria-hidden="true"><i></i></div>
+              <p data-i18n="goal.remaining">About 15 minutes remaining</p>
+            </div>
+          </div>
+          <div class="progress__divider"></div>
+          <div class="leagues">
+            <img class="leagues__badge" src="assets/leagues-locked.svg" alt="Leagues" onerror="this.style.display='none'" />
+            <div style="flex:1">
+              <div class="leagues__title" data-i18n="leagues.title">Unlock Leagues</div>
+              <div class="leagues__bar"><i data-sy="xp-bar"></i></div>
+              <div class="leagues__xp" data-sy="xp-label">0 of 175 XP</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="promo-card">
+          <div class="promo-card__head">
+            <svg class="promo-card__icon" viewBox="0 0 32 32" aria-hidden="true">
+              <path d="M16 3l11 6.5v13L16 29 5 22.5v-13L16 3Z" fill="url(#hex)"/>
+              <path d="M16 10l5 3v6l-5 3-5-3v-6l5-3Z" fill="#fff" opacity=".85"/>
+            </svg>
+            <div class="promo-card__title"><b data-i18n="premium.title">Unlock all learning with Premium</b><span data-i18n="premium.sub">to get smarter, faster</span></div>
+          </div>
+          <a href="#membershipModal" class="btn-explore" data-membership-open data-i18n="premium.explore">Explore Premium</a>
+        </div>
+      </div>
+
+      <!-- Right column: switchable course deck -->
+      <div class="home__right">
+        <div class="home__right-head">
+          <h2 class="home__eyebrow" data-i18n="home.continue">Jump back in</h2>
+          <div class="ai-advice" aria-live="polite">
+            <img class="ai-advice__mascot" src="mascot-cutout.png?v=1" alt="" aria-hidden="true" />
+            <span class="ai-advice__status" aria-hidden="true"></span>
+            <p><strong data-i18n="home.ai.label">AI suggestion for today</strong><span id="aiAdviceCopy">Spend 12 minutes on function periods to reach 70% of this week's goal.</span></p>
+            <a class="ai-advice__action" id="aiAdviceAction" href="index.html"><span data-i18n="home.ai.action">Follow suggestion</span><span aria-hidden="true">→</span></a>
+          </div>
+        </div>
+        <div class="deck">
+          <div class="deck__viewport" id="deck"></div>
+          <div class="deck__nav">
+            <button class="deck__arrow" id="deckPrev" aria-label="Previous course">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="m15 5-7 7 7 7" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </button>
+            <div class="deck__dots" id="deckDots"></div>
+            <button class="deck__arrow" id="deckNext" aria-label="Next course">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="m9 5 7 7-7 7" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Recommended -->
+    <section class="recommended">
+      <h2 class="recommended__title" data-i18n="rec.title">Recommended</h2>
+      <div class="rec-grid">
+        <a href="#" class="rec-card" data-soon="This course isn't in the library yet" data-soon-zh="该课程暂未上线">
+          <img class="rec-card__art" src="assets/data.png" alt="" />
+          <div class="rec-card__title" data-i18n="rec.data">Exploring Data Visually</div>
+          <div class="rec-card__lessons"><span data-i18n="rec.data1">Reading Bar Charts</span><span data-i18n="rec.data2">Analyzing Bar Charts</span></div>
+        </a>
+        <a href="#" class="rec-card" data-soon="This course isn't in the library yet" data-soon-zh="该课程暂未上线">
+          <img class="rec-card__art" src="assets/science.png" alt="" />
+          <div class="rec-card__title" data-i18n="rec.sci">Scientific Thinking</div>
+          <div class="rec-card__lessons"><span data-i18n="rec.sci1">Connecting Gears</span><span data-i18n="rec.sci2">Gears Changing Speeds</span></div>
+        </a>
+        <a href="#" class="rec-card" data-soon="This course isn't in the library yet" data-soon-zh="该课程暂未上线">
+          <img class="rec-card__art" src="assets/probability.png" alt="" />
+          <div class="rec-card__title" data-i18n="rec.prob">Probability and Chance</div>
+          <div class="rec-card__lessons"><span data-i18n="rec.prob1">Comparing Likelihoods</span><span data-i18n="rec.prob2">Multiple Decks</span></div>
+        </a>
+      </div>
+    </section>
+  </main>
+
+
+  <div class="membership-modal" id="membershipModal" hidden>
+    <div class="membership-modal__backdrop" data-membership-close></div>
+    <section class="membership-dialog" role="dialog" aria-modal="true" aria-labelledby="membershipTitle" tabindex="-1">
+      <button class="membership-dialog__close" type="button" data-membership-close aria-label="Close membership dialog">
+        <span aria-hidden="true">×</span>
+      </button>
+
+      <div class="membership-dialog__body">
+        <div class="membership-offer">
+          <div class="membership-offer__intro">
+            <img class="membership-offer__mascot" src="mascot-cutout.png?v=1" alt="" aria-hidden="true" />
+            <div>
+              <p class="membership-kicker" data-member-en="ShareYou Premium" data-member-zh="ShareYou 会员">ShareYou Premium</p>
+              <h2 id="membershipTitle" data-member-en="Unlock the complete ShareYou learning experience" data-member-zh="解锁完整 ShareYou 学习体验">Unlock the complete ShareYou learning experience</h2>
+              <p class="membership-offer__sub" data-member-en="AI plans around your progress, prioritizes weak points, and gives every session a clear next step." data-member-zh="AI 根据你的进度制定计划，优先补齐薄弱点，让每次学习都有明确下一步。">Let AI plan around your progress and focus each session on what matters most.</p>
+            </div>
+          </div>
+
+          <div class="membership-progress">
+            <div class="membership-progress__head">
+              <span data-member-en="This week's progress" data-member-zh="本周完成度">This week's progress</span>
+              <strong>46%</strong>
+            </div>
+            <div class="membership-progress__bar" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="46"><span></span></div>
+            <p data-member-en="3 weak points are ready for focused review" data-member-zh="还有 3 个薄弱点待巩固">3 weak points are ready for focused review</p>
+          </div>
+
+          <ul class="membership-benefits">
+            <li data-member-en="Unlock every course and upcoming knowledge point" data-member-zh="解锁全部课程与后续知识点">Unlock every course and upcoming knowledge point</li>
+            <li data-member-en="Get a personalized AI learning plan every day" data-member-zh="每天获得 AI 个性化学习计划">Get a personalized AI learning plan every day</li>
+            <li data-member-en="Review recent mistakes and weak points without limits" data-member-zh="无限复习近期错题与薄弱点">Review recent mistakes and weak points without limits</li>
+            <li data-member-en="See complete progress, reports, and Leagues" data-member-zh="查看完整成长记录、报告与联赛">See complete progress, reports, and Leagues</li>
+          </ul>
+
+          <div class="membership-plan">
+            <div class="membership-plan__price">
+              <strong data-member-en="¥99 / month" data-member-zh="99元/月">¥99 / month</strong>
+              <small data-member-en="About ¥3.3 per day" data-member-zh="约 3.3 元/天">About ¥3.3 per day</small>
+            </div>
+            <span data-member-en="Cancel anytime" data-member-zh="随时取消">Cancel anytime</span>
+          </div>
+          <button class="membership-upgrade" type="button" data-membership-upgrade data-member-en="Upgrade now" data-member-zh="立即升级">Upgrade now</button>
+          <button class="membership-later" type="button" data-membership-close data-member-en="Not now" data-member-zh="暂时不用">Not now</button>
+        </div>
+
+        <div class="membership-comparison">
+          <div class="membership-comparison__head">
+            <p class="membership-kicker" data-member-en="Plan comparison" data-member-zh="版本对比">Plan comparison</p>
+            <h3 data-member-en="Free vs Premium" data-member-zh="免费版与会员版">Free vs Premium</h3>
+            <p data-member-en="With the same study time, Premium makes every next step clearer." data-member-zh="同样的学习时间，会员版把每一步安排得更清楚。">Choose the learning support that fits you.</p>
+          </div>
+
+          <div class="membership-table" role="table" aria-label="Free and Premium feature comparison">
+            <div class="membership-table__row membership-table__header" role="row">
+              <span role="columnheader" data-member-en="Feature" data-member-zh="功能">Feature</span>
+              <span role="columnheader" data-member-en="Free" data-member-zh="免费版">Free</span>
+              <span class="membership-table__premium-head" role="columnheader"><span data-member-en="Premium" data-member-zh="会员版">Premium</span><small data-member-en="Recommended" data-member-zh="推荐">Recommended</small></span>
+            </div>
+            <div class="membership-table__row" role="row">
+              <span role="cell" data-member-en="Course content" data-member-zh="课程内容">Course content</span>
+              <span role="cell" data-member-en="Selected" data-member-zh="部分">Selected</span>
+              <strong role="cell" data-member-en="All" data-member-zh="全部">All</strong>
+            </div>
+            <div class="membership-table__row" role="row">
+              <span role="cell" data-member-en="AI daily suggestion" data-member-zh="AI 今日建议">AI daily suggestion</span>
+              <span role="cell" data-member-en="Basic" data-member-zh="基础">Basic</span>
+              <strong role="cell" data-member-en="Personalized" data-member-zh="个性化">Personalized</strong>
+            </div>
+            <div class="membership-table__row" role="row">
+              <span role="cell" data-member-en="Weak-point review" data-member-zh="薄弱点复习">Weak-point review</span>
+              <span role="cell" data-member-en="Daily limit" data-member-zh="每日限量">Daily limit</span>
+              <strong role="cell" data-member-en="Unlimited" data-member-zh="无限">Unlimited</strong>
+            </div>
+            <div class="membership-table__row" role="row">
+              <span role="cell" data-member-en="Learning report" data-member-zh="学习报告">Learning report</span>
+              <span role="cell" data-member-en="Basic" data-member-zh="基础">Basic</span>
+              <strong role="cell" data-member-en="Complete" data-member-zh="完整">Complete</strong>
+            </div>
+            <div class="membership-table__row" role="row">
+              <span role="cell" data-member-en="Leagues" data-member-zh="联赛功能">Leagues</span>
+              <span role="cell" data-member-en="Locked" data-member-zh="未解锁">Locked</span>
+              <strong role="cell" data-member-en="Unlocked" data-member-zh="已解锁">Unlocked</strong>
+            </div>
+          </div>
+
+          <p class="membership-comparison__note" data-member-en="Premium benefits activate immediately. Cancel anytime." data-member-zh="会员权益立即生效，可随时取消。">One clear plan. No yearly commitment.</p>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <script src="app.js?v=24"></script>
+  <script src="home-membership.js?v=1"></script>
+  <script>
+    /* ---- hamburger menu ---- */
+    (function () {
+      var ham = document.querySelector('.hamburger');
+      var dd  = document.querySelector('.menu__dropdown');
+      function setOpen(open) { dd.hidden = !open; ham.classList.toggle('is-open', open); ham.setAttribute('aria-expanded', open); }
+      ham.addEventListener('click', function (e) { e.stopPropagation(); setOpen(dd.hidden); });
+      document.addEventListener('click', function (e) { if (!e.target.closest('.menu')) setOpen(false); });
+      document.addEventListener('keydown', function (e) { if (e.key === 'Escape') setOpen(false); });
+    })();
+
+    /* ---- switchable course deck ---- */
+    (function () {
+      var courses = [
+        { title: "Trigonometric Functions", title_zh: "三角函数", level: 1, art: "assets/trig.png",
+          node: "Periodic Phenomena", node_zh: "周期现象", next: "The Period of a Function", next_zh: "函数的周期", href: "index.html",
+          progress: 46, duration: 12, difficulty: "Medium", difficulty_zh: "中等", weakTime: 8,
+          weak: [
+            { en: "Core ideas of function periods", zh: "函数周期的基本概念", rate: 64 },
+            { en: "Recognizing sine graph features", zh: "正弦函数图像特征识别", rate: 48 },
+            { en: "Applying periodic function properties", zh: "周期函数的性质应用", rate: 52 }
+          ],
+          reason: "This lesson reinforces the period judgments you recently missed.", reason_zh: "本节可巩固你最近易错的周期判断。",
+          advice: "Spend 12 minutes on function periods to reach 70% of this week's goal.", advice_zh: "先用 12 分钟完成函数周期，本周目标即可达到 70%。" },
+        { title: "Exponents and Radicals", title_zh: "指数与根式", level: 1, art: "assets/exponents.png",
+          node: "Multiplication Patterns", node_zh: "乘法规律", next: "Exponents", next_zh: "指数", href: "index.html",
+          progress: 32, duration: 15, difficulty: "Medium", difficulty_zh: "中等", weakTime: 9,
+          weak: [
+            { en: "Multiplying powers with the same base", zh: "同底数幂的乘法", rate: 58 },
+            { en: "Understanding negative exponents", zh: "负指数的含义", rate: 46 },
+            { en: "Converting radicals and exponents", zh: "根式与指数互化", rate: 41 }
+          ],
+          reason: "This lesson connects your multiplication patterns to exponent rules.", reason_zh: "本节会把乘法规律与指数规则连接起来。",
+          advice: "Review multiplication patterns for 15 minutes before starting exponents.", advice_zh: "先用 15 分钟复习乘法规律，再进入指数学习。" },
+        { title: "Coordinate Geometry", title_zh: "坐标几何", level: 1, art: "assets/coordinate-geometry.png",
+          node: "Measuring Separation", node_zh: "测量间距", next: "Separation Between Points", next_zh: "点之间的间距", href: "index.html",
+          progress: 64, duration: 10, difficulty: "Easy", difficulty_zh: "简单", weakTime: 7,
+          weak: [
+            { en: "Reading x/y coordinates in order", zh: "x/y 坐标顺序", rate: 54 },
+            { en: "Moving on both coordinate axes", zh: "水平与垂直方向移动", rate: 51 },
+            { en: "Y-axis direction and signs", zh: "y 轴方向与正负号", rate: 38 }
+          ],
+          reason: "This lesson prepares you to locate points and compare distances.", reason_zh: "本节将帮助你定位点并比较坐标间距。",
+          advice: "Complete one 10-minute coordinate exercise to keep today's pace.", advice_zh: "完成 1 个 10 分钟坐标练习，保持今天的学习节奏。" }
+      ];
+      var nodeSVG =
+        '<div class="path-node__marker">' +
+          '<svg class="platform" viewBox="0 0 240 150" aria-hidden="true">' +
+            '<ellipse cx="120" cy="86" rx="104" ry="35" fill="none" stroke="#b3c1fb" stroke-width="7" opacity=".75"/>' +
+            '<ellipse cx="120" cy="82" rx="82" ry="27" fill="none" stroke="url(#hRing)" stroke-width="17"/>' +
+            '<ellipse cx="120" cy="78" rx="54" ry="17" fill="none" stroke="#b6c4ff" stroke-width="10"/>' +
+            '<ellipse cx="120" cy="74" rx="78" ry="44" fill="url(#hCore)"/>' +
+          '</svg>' +
+          '<img class="mascot-art" src="mascot-cutout.png?v=1" alt="" aria-hidden="true">' +
+
+        '</div>';
+
+      function cardHTML(c, i) {
+        var detailId = 'course-details-' + i;
+        var reviewId = 'weak-review-' + i;
+        var weakRows = c.weak.map(function (item) {
+          return '<li class="weak-review__item"><span class="weak-review__item-name">' + item.en + '</span><span class="weak-review__rate">Error rate ' + item.rate + '%</span></li>';
+        }).join('');
+        return '<article class="course-card">' +
+          '<h1 class="course-card__title">' + c.title + '</h1>' +
+          '<div class="course-card__level">LEVEL ' + c.level + '</div>' +
+          '<img class="course-card__art" src="' + c.art + '" alt="">' +
+          '<div class="path-node">' + nodeSVG +
+            '<span class="path-node__label">' + c.node + '</span>' +
+          '</div>' +
+          '<div class="course-details">' +
+            '<button class="course-details__toggle" type="button" aria-expanded="false" aria-controls="' + detailId + '">' +
+              '<span class="course-details__toggle-label">Course details</span>' +
+              '<span class="course-details__chevron" aria-hidden="true">⌄</span>' +
+            '</button>' +
+            '<div class="course-details__panel" id="' + detailId + '" aria-hidden="true">' +
+              '<div class="course-details__inner">' +
+                '<div class="course-details__metrics">' +
+                  '<div class="course-metric course-metric--progress"><span class="course-metric__label">Current progress</span><strong class="course-metric__value">' + c.progress + '%</strong></div>' +
+                  '<div class="course-metric course-metric--time"><span class="course-metric__label">Estimated time</span><strong class="course-metric__value">' + c.duration + ' min</strong></div>' +
+                  '<div class="course-metric course-metric--difficulty"><span class="course-metric__label">Difficulty</span><strong class="course-metric__value">' + c.difficulty + '</strong></div>' +
+                '</div>' +
+                '<p class="course-details__reason">AI recommendation: ' + c.reason + '</p>' +
+              '</div>' +
+            '</div>' +
+          '</div>' +
+          '<div class="weak-review">' +
+            '<button class="weak-review__toggle" type="button" aria-expanded="false" aria-controls="' + reviewId + '">' +
+              '<span class="weak-review__heading"><span class="weak-review__title">Review 3 weak points</span></span>' +
+              '<span class="weak-review__chevron" aria-hidden="true">⌄</span>' +
+            '</button>' +
+            '<div class="weak-review__panel" id="' + reviewId + '" aria-hidden="true">' +
+              '<div class="weak-review__inner">' +
+                '<ul class="weak-review__list">' + weakRows + '</ul>' +
+                '<div class="weak-review__footer"><span class="weak-review__time">About ' + c.weakTime + ' min</span><a class="weak-review__start" href="' + c.href + '">Start review</a></div>' +
+              '</div>' +
+            '</div>' +
+          '</div>' +
+          '<div class="course-card__cta">' +
+            '<span class="course-card__next">Up next &middot; ' + c.next + '</span>' +
+            '<a href="' + c.href + '" class="btn-start">Start</a>' +
+          '</div>' +
+        '</article>';
+      }
+      var deck = document.getElementById('deck');
+      var dotsWrap = document.getElementById('deckDots');
+      var n = courses.length;
+      deck.innerHTML = courses.map(cardHTML).join('');
+      dotsWrap.innerHTML = courses.map(function (_, i) {
+        return '<button class="deck__dot" aria-label="Course ' + (i + 1) + '"></button>';
+      }).join('');
+
+      var cards = Array.prototype.slice.call(deck.children);
+      var dots  = Array.prototype.slice.call(dotsWrap.children);
+      var active = 0;
+      var aiAdviceCopy = document.getElementById('aiAdviceCopy');
+      var aiAdviceAction = document.getElementById('aiAdviceAction');
+
+      function isZh() { return window.SY && SY.lang() === 'zh'; }
+      function put(root, sel, value) {
+        var target = root.querySelector(sel);
+        if (target) target.textContent = value;
+      }
+
+      /* Translate JS-built cards in place so carousel and disclosure state survive language changes. */
+      function relabelDeck() {
+        var zh = isZh();
+        for (var i = 0; i < cards.length && i < courses.length; i++) {
+          var c = courses[i], card = cards[i];
+          put(card, '.course-card__title', zh ? c.title_zh : c.title);
+          put(card, '.course-card__level', zh ? ('第 ' + c.level + ' 关') : ('LEVEL ' + c.level));
+          put(card, '.path-node__label', zh ? c.node_zh : c.node);
+          put(card, '.course-details__toggle-label', zh ? '课程详情' : 'Course details');
+          put(card, '.course-metric--progress .course-metric__label', zh ? '当前完成度' : 'Current progress');
+          put(card, '.course-metric--progress .course-metric__value', c.progress + '%');
+          put(card, '.course-metric--time .course-metric__label', zh ? '预计学习时间' : 'Estimated time');
+          put(card, '.course-metric--time .course-metric__value', zh ? (c.duration + ' 分钟') : (c.duration + ' min'));
+          put(card, '.course-metric--difficulty .course-metric__label', zh ? '难度' : 'Difficulty');
+          put(card, '.course-metric--difficulty .course-metric__value', zh ? c.difficulty_zh : c.difficulty);
+          put(card, '.course-details__reason', (zh ? 'AI 推荐原因：' : 'AI recommendation: ') + (zh ? c.reason_zh : c.reason));
+          put(card, '.weak-review__title', zh ? '复习 3 个薄弱点' : 'Review 3 weak points');
+          var weakItems = card.querySelectorAll('.weak-review__item');
+          for (var j = 0; j < weakItems.length && j < c.weak.length; j++) {
+            put(weakItems[j], '.weak-review__item-name', zh ? c.weak[j].zh : c.weak[j].en);
+            put(weakItems[j], '.weak-review__rate', (zh ? '错误率 ' : 'Error rate ') + c.weak[j].rate + '%');
+          }
+          put(card, '.weak-review__time', zh ? ('预计 ' + c.weakTime + ' 分钟') : ('About ' + c.weakTime + ' min'));
+          put(card, '.weak-review__start', zh ? '开始复习' : 'Start review');
+          put(card, '.course-card__next', (zh ? '下一节 · ' : 'Up next · ') + (zh ? c.next_zh : c.next));
+          put(card, '.btn-start', zh ? '开始学习' : 'Start');
+        }
+        updateAiAdvice();
+      }
+
+      function updateAiAdvice() {
+        var c = courses[active];
+        if (!c) return;
+        aiAdviceCopy.textContent = isZh() ? c.advice_zh : c.advice;
+        aiAdviceAction.href = c.href;
+      }
+
+      function setDetailsOpen(button, open, manageTimer) {
+        var details = button.closest('.course-details');
+        var panel = details.querySelector('.course-details__panel');
+        if (open) {
+          var reviewToggle = button.closest('.course-card').querySelector('.weak-review__toggle[aria-expanded="true"]');
+          if (reviewToggle) setReviewOpen(reviewToggle, false, false);
+        }
+        details.classList.toggle('is-open', open);
+        button.setAttribute('aria-expanded', String(open));
+        panel.setAttribute('aria-hidden', String(!open));
+        put(button, '.course-details__chevron', open ? '⌃' : '⌄');
+        if (manageTimer !== false) open ? stop() : start();
+      }
+
+      function setReviewOpen(button, open, manageTimer) {
+        var review = button.closest('.weak-review');
+        var panel = review.querySelector('.weak-review__panel');
+        if (open) {
+          var detailsToggle = button.closest('.course-card').querySelector('.course-details__toggle[aria-expanded="true"]');
+          if (detailsToggle) setDetailsOpen(detailsToggle, false, false);
+        }
+        review.classList.toggle('is-open', open);
+        button.setAttribute('aria-expanded', String(open));
+        panel.setAttribute('aria-hidden', String(!open));
+        put(button, '.weak-review__chevron', open ? '⌃' : '⌄');
+        if (manageTimer !== false) open ? stop() : start();
+      }
+
+      relabelDeck();
+      document.addEventListener('sy:lang', relabelDeck);
+      var compactDeck = window.matchMedia('(max-width: 720px)');
+
+      function render() {
+        cards.forEach(function (card, i) {
+          var order = (i - active + n) % n;
+          if (order === 0) {
+            card.className = 'course-card is-front';
+            card.style.position = 'relative';
+            card.style.transform = 'none';
+            card.style.opacity = '1';
+            card.style.zIndex = 30;
+            card.style.pointerEvents = 'auto';
+          } else {
+            var openToggle = card.querySelector('.course-details__toggle[aria-expanded="true"]');
+            if (openToggle) setDetailsOpen(openToggle, false, false);
+            var openReview = card.querySelector('.weak-review__toggle[aria-expanded="true"]');
+            if (openReview) setReviewOpen(openReview, false, false);
+            card.className = 'course-card is-bg';
+            card.style.position = 'absolute';
+            var offsetX = compactDeck.matches ? 3 : 14;
+            card.style.transform = 'translate(' + (order * offsetX) + 'px,' + (order * 16) + 'px) scale(' + (1 - order * 0.042) + ')';
+            card.style.opacity = order >= 3 ? '0' : (order === 1 ? '0.72' : '0.38');
+            card.style.zIndex = 30 - order;
+            card.style.pointerEvents = order >= 3 ? 'none' : 'auto';
+          }
+        });
+        dots.forEach(function (d, i) { d.classList.toggle('is-active', i === active); });
+        updateAiAdvice();
+      }
+      function setActive(i) { active = ((i % n) + n) % n; render(); }
+
+      /* ---- autoplay ---- */
+      var DELAY = 3000;
+      var timer = null;
+      var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      function start() { if (reduce) return; stop(); timer = setInterval(function () { setActive(active + 1); }, DELAY); }
+      function stop() { if (timer) { clearInterval(timer); timer = null; } }
+      function go(i) { setActive(i); start(); }   /* manual action resets the timer */
+
+      cards.forEach(function (card, i) {
+        card.addEventListener('click', function (e) {
+          if (card.classList.contains('is-bg')) { e.preventDefault(); go(i); }
+        });
+        var detailsToggle = card.querySelector('.course-details__toggle');
+        detailsToggle.addEventListener('click', function (e) {
+          e.stopPropagation();
+          setDetailsOpen(detailsToggle, detailsToggle.getAttribute('aria-expanded') !== 'true');
+        });
+        var reviewToggle = card.querySelector('.weak-review__toggle');
+        reviewToggle.addEventListener('click', function (e) {
+          e.stopPropagation();
+          setReviewOpen(reviewToggle, reviewToggle.getAttribute('aria-expanded') !== 'true');
+        });
+      });
+      dots.forEach(function (d, i) { d.addEventListener('click', function () { go(i); }); });
+      document.getElementById('deckPrev').addEventListener('click', function () { go(active - 1); });
+      document.getElementById('deckNext').addEventListener('click', function () { go(active + 1); });
+
+      /* pause while hovering / when tab is hidden */
+      var deckEl = document.querySelector('.deck');
+      deckEl.addEventListener('mouseenter', stop);
+      deckEl.addEventListener('mouseleave', start);
+      document.addEventListener('visibilitychange', function () { document.hidden ? stop() : start(); });
+      compactDeck.addEventListener('change', render);
+
+      render();
+      start();
+    })();
+
+    /* ---- viewport-triggered motion and progress feedback ---- */
+    (function () {
+      function setupMotion() {
+        var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        var revealGroups = [
+          ['.search', '.progress', '.promo-card'],
+          ['.home__right-head', '.deck'],
+          ['.recommended__title', '.rec-card']
+        ];
+        var revealItems = [];
+        revealGroups.forEach(function (selectors) {
+          selectors.forEach(function (selector, index) {
+            document.querySelectorAll(selector).forEach(function (el) {
+              el.classList.add('reveal-on-view');
+              el.style.setProperty('--reveal-delay', (index * 80) + 'ms');
+              revealItems.push(el);
+            });
+          });
+        });
+
+        var fills = Array.prototype.slice.call(document.querySelectorAll('.daily-goal__bar i, .leagues__bar i'));
+        fills.forEach(function (fill) {
+          var bar = fill.parentElement;
+          var target = bar.getAttribute('data-progress');
+          target = target ? target + '%' : (fill.style.width || '4%');
+          fill.style.setProperty('--fill-target', target);
+          bar.style.setProperty('--fill-target', target);
+          fill.classList.add('scroll-fill');
+          fill.style.width = '0%';
+        });
+
+        if (reduce || !('IntersectionObserver' in window)) {
+          revealItems.forEach(function (el) { el.classList.add('is-in-view'); });
+          fills.forEach(function (fill) { fill.parentElement.classList.add('is-filled'); });
+          return;
+        }
+
+        document.body.classList.add('motion-ready');
+        var revealObserver = new IntersectionObserver(function (entries) {
+          entries.forEach(function (entry) {
+            if (!entry.isIntersecting) return;
+            entry.target.classList.add('is-in-view');
+            revealObserver.unobserve(entry.target);
+          });
+        }, { threshold: 0.14, rootMargin: '0px 0px -5% 0px' });
+        revealItems.forEach(function (el) { revealObserver.observe(el); });
+
+        var fillObserver = new IntersectionObserver(function (entries) {
+          entries.forEach(function (entry) {
+            if (!entry.isIntersecting) return;
+            entry.target.classList.add('is-filled');
+            fillObserver.unobserve(entry.target);
+          });
+        }, { threshold: 0.55 });
+        fills.forEach(function (fill) { fillObserver.observe(fill.parentElement); });
+      }
+
+      if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', setupMotion);
+      else setupMotion();
+    })();
+  </script>
+</body>
+</html>

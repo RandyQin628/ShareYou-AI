@@ -1,0 +1,5 @@
+# Local editor / harness config — not part of the site
+.claude/
+
+# Unused legacy asset (nav logo is now inline SVG)
+assets/shareyou-lockup-horizontal.svg

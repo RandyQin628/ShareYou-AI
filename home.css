@@ -1,0 +1,322 @@
+/* ============================================================
+   Brilliant — Home (logged-in dashboard) replica
+   Loaded after styles.css (reuses nav / logo / pills / menu).
+   ============================================================ */
+
+/* override course-page vertical centering for a scrolling dashboard */
+body { display: block; }
+
+/* ---------- Layout ---------- */
+.home { max-width: 1180px; margin: 0 auto; padding: 26px 28px 60px; }
+.home__grid {
+  display: grid;
+  grid-template-columns: minmax(320px, 0.92fr) minmax(0, 1.5fr);
+  gap: 28px;
+  align-items: start;
+}
+.home__left  { display: flex; flex-direction: column; gap: 16px; }
+
+/* eyebrow heading that gives the deck a clear purpose */
+.home__right-head {
+  display: flex; align-items: center; justify-content: space-between; gap: 14px;
+  margin-bottom: 14px;
+}
+.home__eyebrow {
+  flex: none; font-size: 13px; font-weight: 700; letter-spacing: .8px;
+  text-transform: uppercase; color: var(--ink-60);
+  margin-left: 14px;
+}
+.ai-advice {
+  width: min(100%, 510px); min-width: 0;
+  display: grid; grid-template-columns: 34px 8px minmax(0, 1fr) auto;
+  align-items: center; gap: 8px; padding: 7px 10px;
+  background: rgba(69,109,255,.065); border: 1px solid rgba(69,109,255,.16);
+  border-radius: 12px;
+}
+.ai-advice__mascot {
+  width: 34px; height: 34px; object-fit: contain;
+  filter: drop-shadow(0 4px 5px rgba(25,77,145,.18));
+  animation: aiMascotFloat 4.2s ease-in-out infinite;
+  animation-play-state: paused;
+}
+.home__right-head.is-in-view .ai-advice__mascot { animation-play-state: running; }
+.ai-advice__status {
+  width: 8px; height: 8px; border-radius: 50%; background: var(--brand-blue);
+  box-shadow: 0 0 0 0 rgba(69,109,255,.34); animation: aiPulse 2.4s ease-out infinite;
+}
+.ai-advice p { min-width: 0; font-size: 12px; line-height: 1.35; color: var(--ink-60); }
+.ai-advice p strong { display: block; color: var(--ink); font-size: 11px; font-weight: 700; }
+.ai-advice p span { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.ai-advice__action {
+  display: inline-flex; align-items: center; gap: 4px; white-space: nowrap;
+  color: var(--brand-blue); font-size: 12px; font-weight: 700;
+}
+.ai-advice__action:hover { text-decoration: underline; text-underline-offset: 3px; }
+@keyframes aiPulse { 70%,100% { box-shadow: 0 0 0 7px rgba(69,109,255,0); } }
+@keyframes aiMascotFloat { 0%, 82%, 100% { transform: translateY(0); } 90% { transform: translateY(-3px); } }
+/* ---------- Search ---------- */
+.search {
+  display: flex; align-items: center; gap: 10px;
+  height: 54px; padding: 0 8px 0 18px;
+  background: #fff; border: 1px solid rgba(0,0,0,.14); border-radius: 999px;
+}
+.search__ico { width: 20px; height: 20px; color: rgba(0,0,0,.4); flex: none; }
+.search input {
+  flex: 1; border: none; outline: none; background: none;
+  font: inherit; font-size: 16px; color: var(--ink);
+}
+.search input::placeholder { color: rgba(0,0,0,.4); }
+.search__ask {
+  border: none; cursor: pointer;
+  padding: 9px 20px; border-radius: 999px;
+  background: #ededed; color: rgba(0,0,0,.45);
+  font-size: 15px; font-weight: 600;
+}
+
+/* ---------- Card base ---------- */
+.card {
+  background: #fff; border: 1px solid rgba(0,0,0,.10);
+  border-radius: 18px; padding: 22px;
+}
+
+/* ---------- Streak card ---------- */
+.streak__top { display: flex; align-items: flex-start; justify-content: space-between; }
+.streak__count { display: flex; align-items: center; gap: 4px; font-size: 46px; font-weight: 800; letter-spacing: -1px; }
+.streak__count svg { width: 34px; height: 34px; }
+.streak__freezes { display: flex; gap: 8px; }
+.streak__freeze { width: 26px; height: 30px; border: 2px solid rgba(0,0,0,.12); border-radius: 6px; }
+.streak__days { margin-top: 18px; display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; }
+.day { display: flex; flex-direction: column; align-items: center; gap: 8px; }
+.day__dot {
+  width: 50px; height: 50px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  border: 1.5px solid rgba(0,0,0,.10);
+}
+.day__dot svg { width: 24px; height: 24px; }
+.day.is-done .day__dot { background: #a7e000; border-color: #a7e000; }
+.day__label { font-size: 15px; color: rgba(0,0,0,.45); font-weight: 500; }
+.day.is-today .day__label { color: var(--ink); font-weight: 700; }
+
+/* ---------- Daily learning goal (inside the progress card) ---------- */
+.daily-goal {
+  margin-top: 18px; padding-top: 16px; border-top: 1px solid rgba(0,0,0,.08);
+}
+.daily-goal__head { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.daily-goal__head span { font-size: 14px; font-weight: 700; }
+.daily-goal__head strong { font-size: 14px; font-weight: 700; white-space: nowrap; }
+.daily-goal__bar {
+  position: relative; margin-top: 10px; height: 8px; border-radius: 6px; background: rgba(0,0,0,.08);
+}
+.daily-goal__bar i { display: block; width: 50%; height: 100%; border-radius: inherit; background: var(--brand-blue); }
+
+.daily-goal p { margin-top: 7px; font-size: 12px; color: var(--ink-60); }
+/* ---------- Premium card ---------- */
+.promo-card {
+  background: linear-gradient(135deg, #fdf3ea 0%, #fbeef4 100%);
+  border: 1px solid rgba(0,0,0,.06); border-radius: 18px; padding: 20px;
+}
+.promo-card__head { display: flex; align-items: center; gap: 14px; }
+.promo-card__icon { width: 46px; height: 46px; flex: none; }
+.promo-card__title { font-size: 17px; font-weight: 700; line-height: 1.3; }
+.promo-card__title span { display: block; font-weight: 400; color: var(--ink-60); font-size: 15px; }
+.btn-explore {
+  display: block; text-align: center; margin-top: 18px;
+  padding: 14px; border-radius: 999px; color: #3a2a5e; font-weight: 700; font-size: 16px;
+  background: linear-gradient(95deg, #8f7bf0 0%, #d98fd0 45%, #f6ad5d 100%);
+  transition: transform .12s ease, box-shadow .12s ease;
+}
+.btn-explore:hover { transform: translateY(-1px); box-shadow: 0 8px 18px rgba(180,120,200,.3); }
+
+/* ---------- Progress card (streak + leagues grouped) ---------- */
+.progress__divider { height: 1px; background: rgba(0,0,0,.08); margin: 20px 0; }
+
+/* ---------- Leagues (row inside the progress card) ---------- */
+.leagues { display: flex; align-items: center; gap: 16px; }
+.leagues__badge { width: 56px; height: 56px; flex: none; opacity: .9; }
+.leagues__title { font-size: 16px; font-weight: 700; }
+.leagues__bar { margin-top: 8px; height: 8px; border-radius: 6px; background: rgba(0,0,0,.08); overflow: hidden; }
+.leagues__bar i { display: block; height: 100%; width: 4%; background: var(--brand-blue-soft); }
+.leagues__xp { margin-top: 6px; font-size: 13px; color: var(--ink-60); }
+
+/* ---------- Right: switchable course deck ---------- */
+.deck { position: relative; }
+.deck__viewport { position: relative; }
+.course-card {
+  background: #fff; border: 1px solid rgba(0,0,0,.10); border-radius: 22px;
+  padding: 34px 40px 30px;
+  box-shadow: 0 10px 30px rgba(20,30,80,.05);
+  transition: transform .48s cubic-bezier(.2,.7,.3,1), opacity .36s ease, box-shadow .36s ease, filter .36s ease;
+  will-change: transform, opacity;
+}
+.course-card.is-bg { position: absolute; top: 0; left: 0; right: 0; cursor: pointer; filter: saturate(.72); box-shadow: 0 8px 22px rgba(20,30,80,.035); }
+.course-card.is-front { position: relative; z-index: 30; filter: none; box-shadow: 0 16px 38px rgba(20,30,80,.075); }
+
+.deck__nav { display: flex; align-items: center; justify-content: center; gap: 16px; margin-top: 30px; }
+.deck__arrow {
+  width: 38px; height: 38px; border-radius: 50%;
+  border: 1px solid rgba(0,0,0,.15); background: #fff; color: var(--ink);
+  display: flex; align-items: center; justify-content: center; cursor: pointer;
+  transition: background .12s ease, transform .1s ease;
+}
+.deck__arrow:hover { background: rgba(0,0,0,.05); }
+.deck__arrow:active { transform: scale(.92); }
+.deck__dots { display: flex; gap: 9px; }
+.deck__dot {
+  width: 9px; height: 9px; padding: 0; border: none; border-radius: 50%;
+  background: rgba(0,0,0,.18); cursor: pointer;
+  transition: background .15s ease, transform .15s ease;
+}
+.deck__dot.is-active { background: var(--brand-blue); transform: scale(1.2); }
+.course-card__title { text-align: center; font-size: 28px; font-weight: 700; letter-spacing: -.5px; }
+.course-card__level { text-align: center; margin-top: 8px; font-size: 13px; font-weight: 700; letter-spacing: 1.4px; color: #5048d6; }
+.course-card__art { display: block; width: 230px; height: 230px; object-fit: contain; margin: 6px auto 4px; }
+
+.path-node { display: flex; align-items: center; gap: 16px; margin-top: 6px; }
+.path-node__marker { position: relative; width: 96px; height: 70px; flex: none; }
+.path-node__marker .platform { position: absolute; left: 0; bottom: 0; width: 96px; height: 60px; }
+.path-node__marker .mascot-art {
+  position: absolute; left: 14px; bottom: 19px; width: 68px; height: 68px;
+  object-fit: contain; object-position: center;
+  filter: drop-shadow(0 8px 8px rgba(25,77,145,.26));
+  animation: bob 3s ease-in-out infinite; animation-play-state: paused;
+}
+.deck.is-in-view .course-card.is-front .path-node__marker .mascot-art { animation-play-state: running; }
+
+.path-node__label { font-size: 19px; font-weight: 700; }
+
+/* ---------- Expandable course decision details ---------- */
+.course-details { margin-top: 12px; border-top: 1px solid rgba(0,0,0,.08); }
+.course-details__toggle {
+  width: 100%; min-height: 42px; border: 0; background: transparent; color: var(--ink);
+  display: flex; align-items: center; justify-content: space-between; gap: 12px;
+  font: inherit; font-size: 13px; font-weight: 700; cursor: pointer;
+}
+.course-details__toggle:hover { color: var(--brand-blue); }
+.course-details__chevron { flex: none; font-size: 18px; line-height: 1; }
+.course-details__panel {
+  max-height: 0; overflow: hidden; opacity: 0; visibility: hidden;
+  transition: max-height .28s ease, opacity .2s ease, visibility 0s linear .28s;
+}
+.course-details.is-open .course-details__panel {
+  max-height: 190px; opacity: 1; visibility: visible;
+  transition: max-height .32s ease, opacity .22s ease;
+}
+.course-details__inner { padding: 2px 0 14px; }
+.course-details__metrics { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
+.course-metric { min-width: 0; padding-right: 10px; border-right: 1px solid rgba(0,0,0,.08); }
+.course-metric:last-child { padding-right: 0; border-right: 0; }
+.course-metric__label { display: block; font-size: 11px; line-height: 1.25; color: var(--ink-60); }
+.course-metric__value { display: block; margin-top: 3px; font-size: 15px; font-weight: 700; color: var(--ink); }
+.course-details__reason {
+  margin-top: 11px; padding: 9px 11px; border-left: 3px solid var(--brand-blue);
+  background: rgba(69,109,255,.055); color: var(--ink-60); font-size: 12px; line-height: 1.45;
+}
+.course-card.is-bg .course-details { pointer-events: none; }
+
+/* ---------- Weak-point quick review ---------- */
+.weak-review { border-top: 1px solid rgba(0,0,0,.08); }
+.weak-review__toggle {
+  width: 100%; min-height: 48px; padding: 0; border: 0; background: transparent; color: var(--ink);
+  display: flex; align-items: center; justify-content: space-between; gap: 12px;
+  font: inherit; font-size: 14px; font-weight: 700; cursor: pointer;
+}
+.weak-review__toggle:hover { color: var(--brand-blue); }
+.weak-review__toggle:focus-visible, .course-details__toggle:focus-visible {
+  outline: 3px solid rgba(69,109,255,.22); outline-offset: 2px; border-radius: 8px;
+}
+.weak-review__heading { display: inline-flex; min-width: 0; align-items: center; gap: 10px; }
+
+.weak-review__chevron { flex: none; font-size: 18px; line-height: 1; }
+.weak-review__panel {
+  max-height: 0; overflow: hidden; opacity: 0; visibility: hidden;
+  transition: max-height .34s ease, opacity .22s ease, visibility 0s linear .34s;
+}
+.weak-review.is-open .weak-review__panel {
+  max-height: 290px; opacity: 1; visibility: visible;
+  transition: max-height .4s cubic-bezier(.2,.7,.3,1), opacity .24s ease;
+}
+.weak-review__inner { padding: 2px 0 15px; }
+.weak-review__list { list-style: none; margin: 0; padding: 0; border-top: 1px solid rgba(69,109,255,.11); }
+.weak-review__item {
+  min-height: 40px; display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 16px;
+  border-bottom: 1px solid rgba(0,0,0,.065); font-size: 12px;
+}
+.weak-review__item-name { min-width: 0; font-weight: 600; }
+.weak-review__rate { color: var(--ink-60); white-space: nowrap; }
+.weak-review__footer { display: flex; align-items: center; justify-content: space-between; gap: 14px; margin-top: 12px; }
+.weak-review__time { color: var(--ink-60); font-size: 12px; }
+.weak-review__start {
+  display: inline-flex; align-items: center; justify-content: center; min-width: 98px; height: 34px; padding: 0 16px;
+  border: 1px solid rgba(69,109,255,.48); border-radius: 8px; color: var(--brand-blue); font-size: 12px; font-weight: 700;
+  transition: background .16s ease, border-color .16s ease, transform .12s ease;
+}
+.weak-review__start:hover { background: rgba(69,109,255,.07); border-color: var(--brand-blue); }
+.weak-review__start:active { transform: translateY(1px); }
+.course-card.is-bg .weak-review { pointer-events: none; }
+
+.course-card__cta {
+  display: flex; flex-direction: column; align-items: center; gap: 6px;
+  margin-top: 0; padding-top: 16px; border-top: 1px solid rgba(0,0,0,.08);
+}
+.course-card__next { font-size: 15px; color: var(--ink-60); font-weight: 500; }
+.btn-start {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 100%; max-width: 360px; height: 50px; border-radius: 60px;
+  background: var(--brand-blue); color: #fff; font-size: 16px; font-weight: 600;
+  box-shadow: 0 4px 0 0 #294bc6; transition: transform .08s ease, box-shadow .08s ease;
+}
+.btn-start:hover { background: #3a5ff0; }
+.btn-start:active { transform: translateY(3px); box-shadow: 0 1px 0 0 #294bc6; }
+
+/* ---------- Recommended ---------- */
+.recommended { margin-top: 46px; }
+.recommended__title { font-size: 22px; font-weight: 700; margin-bottom: 18px; }
+.rec-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 22px; }
+.rec-card {
+  background: #fff; border: 1px solid rgba(0,0,0,.10); border-radius: 18px;
+  padding: 22px 24px; display: flex; flex-direction: column; align-items: center; text-align: center;
+  transition: transform .12s ease, box-shadow .15s ease;
+}
+.rec-card:hover { transform: translateY(-3px); box-shadow: 0 14px 30px rgba(20,30,80,.10); }
+.rec-card__art { width: 110px; height: 110px; object-fit: contain; }
+.rec-card__title { margin-top: 14px; font-size: 19px; font-weight: 700; }
+.rec-card__lessons { margin-top: 10px; display: flex; flex-direction: column; gap: 6px; font-size: 14px; color: var(--ink-60); }
+
+/* ---------- Viewport-triggered feedback ---------- */
+.motion-ready .reveal-on-view {
+  opacity: 0; transform: translateY(14px);
+  transition: opacity .48s ease var(--reveal-delay, 0ms), transform .58s cubic-bezier(.2,.72,.25,1) var(--reveal-delay, 0ms);
+}
+.motion-ready .reveal-on-view.is-in-view { opacity: 1; transform: translateY(0); }
+.scroll-fill { transition: width .9s cubic-bezier(.2,.7,.25,1); }
+.is-filled > .scroll-fill { width: var(--fill-target) !important; }
+
+/* ---------- Responsive ---------- */
+@media (max-width: 940px) {
+  .home__grid { grid-template-columns: 1fr; }
+  .rec-grid { grid-template-columns: 1fr; }
+}
+@media (max-width: 720px) {
+  .nav__links, .btn-premium { display: none; }
+  .nav__left { gap: 0; }
+  .nav__inner { padding: 0 12px; }
+  .logo { gap: 6px; }
+  .logo__mark { width: 40px; height: 31px; }
+  .logo__text { font-size: 20px; }
+  .nav__right { gap: 7px; }
+  .stat-pill { padding: 6px 10px; }
+  .nav__right .stat-pill[title="Day streak"] { display: none; }
+  .home { padding: 24px 16px 50px; }
+  .home__right-head { align-items: stretch; flex-direction: column; }
+  .home__eyebrow { margin-left: 8px; }
+  .ai-advice { width: 100%; max-width: none; }
+  .ai-advice p span { white-space: normal; }
+  .course-card { padding: 26px 22px; }
+  .weak-review__inner { padding-left: 0; }
+  .weak-review__item { gap: 10px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .ai-advice__status, .ai-advice__mascot, .path-node__marker .mascot-art { animation: none; }
+  .course-details__panel, .weak-review__panel, .course-card, .scroll-fill { transition: none; }
+  .motion-ready .reveal-on-view { opacity: 1; transform: none; transition: none; }
+}

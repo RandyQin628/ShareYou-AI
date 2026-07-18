@@ -1,0 +1,365 @@
+/* ============================================================
+   Brilliant — Lesson player replica
+   "Separation Between Points · Place a point at (2, 1)"
+   ============================================================ */
+
+:root {
+  --ink: #19181c;
+  --blue: #4255ff;
+  --blue-dark: #2e3bd6;
+  --green: #18b15c;
+  --green-soft: #e3f8ec;
+  --red: #e8543e;
+  --red-soft: #fdeae6;
+  --line: #ededed;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { height: 100%; }
+body {
+  background: #fff; color: var(--ink);
+  font-family: "Poppins", "Segoe UI", system-ui, -apple-system, "Helvetica Neue", Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  display: flex; flex-direction: column;
+  overflow: hidden;
+}
+button { font: inherit; cursor: pointer; }
+@keyframes pageIn { from { opacity: 0; } to { opacity: 1; } }
+.lp-stage { animation: pageIn .3s ease both; }
+@media (prefers-reduced-motion: reduce) { .lp-stage { animation: none; } }
+:focus-visible { outline: 2px solid var(--blue); outline-offset: 2px; }
+#grid:focus { outline: none; }   /* no box on mouse click... */
+#grid:focus-visible { outline: 2px solid var(--blue); outline-offset: 4px; border-radius: 12px; }   /* ...only on keyboard focus */
+
+/* ---------- Top bar ---------- */
+.lp-top {
+  flex: none; height: 64px;
+  display: flex; align-items: center; gap: 22px;
+  padding: 0 26px;
+}
+.lp-close {
+  border: none; background: none; color: #333;
+  width: 36px; height: 36px; border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+}
+.lp-close:hover { background: rgba(0,0,0,.06); }
+.lp-progress { flex: 1; display: flex; align-items: center; gap: 12px; max-width: 620px; }
+.lp-bar { flex: 1; height: 12px; border-radius: 999px; background: #eaeaea; overflow: hidden; }
+.lp-bar i { display: block; height: 100%; width: 8%; border-radius: 999px; background: var(--blue); transition: width .4s ease; }
+.lp-dot { width: 12px; height: 12px; border-radius: 50%; background: #e3e3e3; flex: none; }
+.lp-dot.is-done { background: var(--blue); }
+.lp-stats { display: flex; align-items: center; gap: 18px; font-size: 20px; font-weight: 700; color: #c2c2c2; }
+.lp-stats svg { width: 22px; height: 22px; vertical-align: -3px; }
+
+/* ---------- Stage ---------- */
+.lp-stage { flex: 1; min-height: 0; display: flex; align-items: stretch; gap: 16px; padding: 4px 26px 10px; }
+.lp-card {
+  position: relative; flex: 1; min-width: 0;
+  border: 1px solid rgba(0,0,0,.10); border-radius: 18px;
+  padding: 30px 40px;
+  display: flex; flex-direction: column; align-items: center;
+  overflow: hidden;
+}
+.lp-tools { flex: none; width: 30px; display: flex; flex-direction: column; gap: 22px; color: #b9b9b9; padding-top: 22px; }
+.lp-tools button { border: none; background: none; color: inherit; width: 28px; height: 28px; }
+.lp-tools button:hover { color: #888; }
+
+/* ---------- Chat panel (expanded) ---------- */
+.lp-chat { flex: 0 0 34%; max-width: 420px; display: flex; flex-direction: column; padding: 26px 24px 8px; }
+.lp-chat[hidden] { display: none; }
+.lp-chat__msgs { flex: 1 1 auto; min-height: 0; overflow-y: auto; display: flex; flex-direction: column; gap: 18px; padding-right: 4px; }
+.lp-msg { font-size: 18px; line-height: 1.35; padding: 14px 18px; border-radius: 16px; max-width: 90%; }
+.lp-msg.is-faded { color: rgba(0,0,0,.4); padding: 0 18px; }
+.lp-msg.is-active {
+  color: var(--ink); background: #e8f5f0;
+  border: 1px solid #d2e9e0; border-bottom-left-radius: 4px;
+  align-self: flex-start;
+}
+.lp-msg.is-tutor { align-self: flex-start; background: #f0f1f5; color: var(--ink); border-bottom-left-radius: 4px; }
+.lp-msg.is-user  { align-self: flex-end; background: var(--blue); color: #fff; border-bottom-right-radius: 4px; }
+
+/* typing indicator */
+.lp-msg.lp-typing { display: flex; gap: 6px; align-items: center; padding: 16px 18px; }
+.lp-typing span { width: 7px; height: 7px; border-radius: 50%; background: #9a9a9a; animation: typingDot 1s infinite; }
+.lp-typing span:nth-child(2) { animation-delay: .15s; }
+.lp-typing span:nth-child(3) { animation-delay: .30s; }
+@keyframes typingDot { 0%, 60%, 100% { opacity: .3; transform: translateY(0); } 30% { opacity: 1; transform: translateY(-3px); } }
+body.chat-open .lp-stage { justify-content: flex-start; }
+body.chat-open .lp-question,
+body.chat-open .lp-bubble { display: none; }
+
+/* Start over */
+.lp-startover {
+  position: absolute; right: 26px; bottom: 22px;
+  display: inline-flex; align-items: center; gap: 7px;
+  border: none; background: none; color: #6b6b6b; font-size: 16px; font-weight: 600;
+}
+.lp-startover[hidden] { display: none; }
+.lp-startover:hover { color: var(--ink); }
+.lp-question { font-size: 24px; font-weight: 500; text-align: center; margin-bottom: 6px; }
+
+.lp-grid-wrap { flex: 1; min-height: 0; display: flex; align-items: center; justify-content: center; width: 100%; }
+#grid { max-width: 100%; max-height: 100%; touch-action: none; cursor: pointer; user-select: none; -webkit-user-select: none; }
+#grid text { pointer-events: none; user-select: none; -webkit-user-select: none; }
+#grid .pt { cursor: grab; }
+#grid.grabbing .pt { cursor: grabbing; }
+
+/* "select the farthest point" options */
+.sel-opt { cursor: pointer; }
+.sel-ring { stroke: transparent; stroke-width: 3; transition: stroke .12s ease; }
+.sel-opt:hover .sel-halo { stroke: #9fb0ff; }
+.sel-opt.is-sel .sel-ring,
+.sel-opt.is-correct .sel-ring { stroke: #18b15c; }
+.sel-opt.is-correct .sel-dot { fill: #18b15c; }
+
+/* floating "mascot speech bubble" — auto-pops bottom-left near the mascot on question screens */
+.lp-bubble {
+  position: absolute; left: 28px; bottom: 22px; z-index: 5;
+  max-width: 320px; padding: 14px 18px;
+  background: #eef1f7; border-radius: 18px; border-bottom-left-radius: 5px;
+  font-size: 18px; line-height: 1.35; color: #2c2c33;
+  box-shadow: 0 6px 18px rgba(20,30,80,.07);
+  transform-origin: left bottom;
+}
+.lp-bubble.pop { animation: bubblePop .42s cubic-bezier(.2,.9,.3,1); }
+@keyframes bubblePop {
+  0%   { opacity: 0; transform: translateY(10px) scale(.85); }
+  60%  { opacity: 1; transform: translateY(0) scale(1.03); }
+  100% { transform: translateY(0) scale(1); }
+}
+body.summary-mode .lp-bubble { display: none; }   /* summary leads with the top heading instead */
+
+/* ---------- Bottom bar ---------- */
+.lp-bottom {
+  flex: none; height: 96px;
+  display: flex; align-items: center; gap: 18px;
+  padding: 0 26px;
+}
+.lp-mascot {
+  width: 80px;
+  height: 80px;
+  flex: none;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  appearance: none;
+  cursor: pointer;
+}
+.lp-mascot img,
+.lp-done__mascot {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  filter: drop-shadow(0 8px 12px rgba(30, 78, 172, .18));
+}
+.lp-mascot:focus-visible {
+  outline: 3px solid rgba(78, 107, 255, .38);
+  outline-offset: 2px;
+  border-radius: 14px;
+}
+.lp-io {
+  display: flex; align-items: center; gap: 4px;
+  background: #f3f3f3; border-radius: 999px; padding: 6px;
+}
+.lp-io button { width: 44px; height: 40px; border: none; background: none; border-radius: 999px; color: #9a9a9a; display: flex; align-items: center; justify-content: center; }
+.lp-io button:hover { background: rgba(0,0,0,.06); }
+.lp-io .sep { width: 1px; height: 22px; background: rgba(0,0,0,.12); }
+
+/* "How can I help?" input (shown when chat is open) */
+.lp-chatinput { display: none; align-items: center; gap: 6px; flex: 0 1 360px; background: #f3f3f3; border-radius: 999px; padding: 5px 6px 5px 18px; }
+.lp-chatinput input { flex: 1; min-width: 0; border: none; background: none; outline: none; font: inherit; font-size: 16px; color: var(--ink); }
+.lp-chatinput input::placeholder { color: rgba(0,0,0,.4); }
+.lp-chatinput button { width: 40px; height: 40px; border: none; background: none; border-radius: 999px; color: #9a9a9a; display: flex; align-items: center; justify-content: center; transition: background .15s ease, color .15s ease; }
+.lp-chatinput button:hover { background: rgba(0,0,0,.06); }
+/* mic by default, send-arrow once there is text */
+.lp-chatinput .ic-send { display: none; }
+.lp-chatinput.has-text .ic-mic { display: none; }
+.lp-chatinput.has-text .ic-send { display: block; }
+.lp-chatinput.has-text .lp-send { background: var(--blue); color: #fff; }
+.lp-chatinput.has-text .lp-send:hover { background: var(--blue-dark); }
+body.chat-open .lp-io { display: none; }
+body.chat-open .lp-chatinput { display: flex; }
+
+/* suggested-question chips */
+.lp-suggestions { flex: none; display: flex; flex-wrap: wrap; gap: 8px; padding-top: 16px; }
+.lp-chip {
+  border: 1px solid rgba(66,85,255,.35); background: #fff; color: var(--blue);
+  border-radius: 999px; padding: 8px 14px; font-size: 14px; font-weight: 600;
+  cursor: pointer; transition: background .12s ease, transform .08s ease;
+  animation: chipIn .25s ease both;
+}
+.lp-chip:hover { background: #eef0ff; }
+.lp-chip:active { transform: scale(.96); }
+/* primary "Next / Got it" chip during the stepped demo */
+.lp-chip--next { background: var(--blue); color: #fff; border-color: var(--blue); }
+.lp-chip--next:hover { background: var(--blue-dark); }
+@keyframes chipIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+
+.lp-check {
+  flex: 1; max-width: 720px; margin-left: auto;
+  height: 56px; border: none; border-radius: 999px;
+  background: #f2f2f2; color: #9b9b9b;
+  font-size: 18px; font-weight: 700;
+  transition: background .15s ease, color .15s ease, transform .08s ease;
+}
+.lp-check.is-ready { background: var(--blue); color: #fff; box-shadow: 0 4px 0 0 var(--blue-dark); }
+.lp-check.is-ready:active { transform: translateY(3px); box-shadow: 0 1px 0 0 var(--blue-dark); }
+.lp-check.is-correct { background: var(--green); color: #fff; box-shadow: 0 4px 0 0 #0e7d40; }
+.lp-check.summary { background: #2f2f33; color: #fff; box-shadow: none; }
+.lp-check.summary:hover { background: #3f3f45; }
+
+/* knowledge-summary screen */
+body.summary-mode:not(.chat-open) .lp-question { display: block; }  /* keep the summary heading visible when chat is closed */
+#bubbleChips {
+  display: none;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 10px 12px;
+  width: 100%;
+  max-width: 1280px;
+  margin: 18px auto 0;
+}
+body.summary-mode:not(.chat-open) #bubbleChips { display: flex; }
+body.summary-mode:not(.chat-open) #bubbleChips .lp-chip { flex: 0 0 auto; white-space: nowrap; }
+body.summary-mode #grid { cursor: default; }
+.lp-summary-text { display: none; max-width: 640px; margin: 22px auto 0; font-size: 19px; line-height: 1.5; text-align: center; color: var(--ink); }
+/* the body recap lives in the floating bubble + openable chat, so it is never drawn on the card
+   (keeps it from sitting under the bottom-left bubble/chips) */
+body.summary-mode.chat-open .lp-question { display: block; }       /* keep the heading on the card */
+@media (max-width: 720px) {
+  body.summary-mode:not(.chat-open) #bubbleChips .lp-chip { white-space: normal; }
+}
+
+/* ---------- Feedback banner ---------- */
+.lp-feedback {
+  position: fixed; left: 0; right: 0; bottom: 0; z-index: 40;
+  transform: translateY(100%); transition: transform .35s cubic-bezier(.2,.7,.3,1);
+  padding: 22px 26px 26px;
+  display: flex; align-items: center; gap: 18px;
+}
+.lp-feedback.show { transform: translateY(0); }
+.lp-feedback.correct { background: var(--green-soft); }
+.lp-feedback.wrong   { background: var(--red-soft); }
+.lp-feedback__icon { width: 52px; height: 52px; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex: none; color: #fff; }
+.lp-feedback.correct .lp-feedback__icon { background: var(--green); }
+.lp-feedback.wrong   .lp-feedback__icon { background: var(--red); }
+.lp-feedback__text strong { display: block; font-size: 20px; font-weight: 700; }
+.lp-feedback.correct .lp-feedback__text strong { color: #0e7d40; }
+.lp-feedback.wrong   .lp-feedback__text strong { color: #b23a26; }
+.lp-feedback__text span { font-size: 15px; color: #4a4a4a; }
+.lp-feedback__btn {
+  margin-left: auto; height: 54px; padding: 0 46px; border: none; border-radius: 999px;
+  color: #fff; font-size: 17px; font-weight: 700;
+}
+.lp-feedback.correct .lp-feedback__btn { background: var(--green); box-shadow: 0 4px 0 0 #0e7d40; }
+.lp-feedback.wrong   .lp-feedback__btn { background: var(--red); box-shadow: 0 4px 0 0 #b23a26; }
+.lp-feedback__btn:active { transform: translateY(3px); }
+
+/* ---------- Completion overlay ---------- */
+.lp-done {
+  position: fixed; inset: 0; z-index: 60; background: rgba(255,255,255,.97);
+  display: none; flex-direction: column; align-items: center; justify-content: center; gap: 8px; text-align: center;
+}
+.lp-done.show { display: flex; }
+.lp-done__mascot { width: 140px; height: 140px; }
+.lp-done h2 { font-size: 30px; font-weight: 700; margin-top: 10px; }
+.lp-done p { font-size: 17px; color: var(--ink-60, rgba(0,0,0,.55)); }
+.lp-done a {
+  margin-top: 14px; display: inline-flex; align-items: center; justify-content: center;
+  height: 54px; padding: 0 40px; border-radius: 999px; background: var(--blue); color: #fff;
+  font-weight: 700; font-size: 17px; text-decoration: none; box-shadow: 0 4px 0 0 var(--blue-dark);
+}
+.lp-done__next { margin-top: 22px; }
+.lp-done__next[hidden] { display: none; }
+.lp-done__back { background: #f0f0f2; color: #3a3a3f; box-shadow: none; margin-top: 10px; }
+.lp-done__back:hover { background: #e7e7ea; }
+
+@media (max-width: 640px) {
+  .lp-question { font-size: 19px; }
+  .lp-bubble { display: none; }
+  .lp-card { padding: 18px; }
+}
+
+/* ============================================================
+   Animations
+   ============================================================ */
+
+/* chat messages slide + fade in, staggered, each time chat opens */
+@keyframes msgIn { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
+body.chat-open .lp-msg { animation: msgIn .42s cubic-bezier(.2,.7,.3,1) both; }
+body.chat-open .lp-msg:nth-child(1) { animation-delay: .04s; }
+body.chat-open .lp-msg:nth-child(2) { animation-delay: .16s; }
+body.chat-open .lp-msg:nth-child(3) { animation-delay: .28s; }
+body.chat-open .lp-chatinput { animation: msgIn .4s ease .30s both; }
+
+/* mascot — gentle idle breathing */
+.lp-mascot { transform-origin: bottom center; animation: mascotIdle 3s ease-in-out infinite; }
+@keyframes mascotIdle {
+  0%, 100% { transform: translateY(0) scale(1, 1); }
+  50%      { transform: translateY(-4px) scale(1.015, .985); }
+}
+/* mascot — squash-and-stretch pop on click */
+.lp-mascot.pop { animation: mascotPop .5s ease; }
+@keyframes mascotPop {
+  0%   { transform: translateY(0) scale(1, 1); }
+  28%  { transform: translateY(-12px) scale(1.07, .93); }
+  55%  { transform: translateY(0) scale(.95, 1.06); }
+  78%  { transform: translateY(-3px) scale(1.02, .98); }
+  100% { transform: translateY(0) scale(1, 1); }
+}
+
+/* mascot — celebration double-jump on a correct answer */
+.lp-mascot.celebrate { animation: mascotCelebrate 1s ease; }
+@keyframes mascotCelebrate {
+  0%   { transform: translateY(0) scale(1, 1) rotate(0); }
+  12%  { transform: translateY(-3px) scale(1.06, .94); }
+  30%  { transform: translateY(-28px) scale(.94, 1.1) rotate(-9deg); }
+  46%  { transform: translateY(0) scale(1.06, .92); }
+  62%  { transform: translateY(-20px) scale(.97, 1.06) rotate(9deg); }
+  80%  { transform: translateY(0) scale(1.05, .96); }
+  100% { transform: translateY(0) scale(1, 1) rotate(0); }
+}
+
+/* ---------- "Show me how" grid demo ---------- */
+#demo { pointer-events: none; }
+#demo.fade-out { opacity: 0; transition: opacity .4s ease; }
+.demo-axis { fill: none; stroke: var(--blue); stroke-width: 7; stroke-linecap: round; }
+.demo-trace { fill: none; stroke: var(--blue); stroke-width: 4; stroke-linecap: round; }
+.demo-marker { fill: var(--blue); }
+.demo-cap { font-size: 15px; font-weight: 700; fill: var(--blue-dark); transition: opacity .2s ease; }
+.demo-target { fill: none; stroke: var(--blue); stroke-width: 3; }
+.demo-wrong line { stroke: var(--red); stroke-width: 4; stroke-linecap: round; }
+.demo-wrong.gone { opacity: 0; transition: opacity .3s ease; }
+.demo-target.pulse { transform-box: fill-box; transform-origin: center; animation: demoPulse .7s ease 2; }
+@keyframes demoPulse {
+  0%   { transform: scale(.55); opacity: 1; }
+  50%  { transform: scale(1.18); opacity: .55; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+/* ---------- Score + star (award on a correct answer) ---------- */
+.lp-stats__score { position: relative; display: inline-flex; align-items: center; gap: 4px; }
+#score { display: inline-block; transition: color .3s ease; }
+#score.lp-score-lit { color: #2f2f33; }
+#score.bump { animation: scoreBump .5s ease; }
+.lp-star { color: #c2c2c2; transition: color .45s ease; transform-box: fill-box; transform-origin: center; }
+.lp-star.lit { color: #f5a623; }
+.lp-star.twinkle { animation: starTwinkle .72s ease; }
+.lp-plus {
+  position: absolute; left: 8px; top: 0;
+  color: #f5a623; font-size: 15px; font-weight: 800;
+  opacity: 0; pointer-events: none;
+}
+.lp-plus.show { animation: floatUp 1s ease forwards; }
+@keyframes scoreBump { 0% { transform: scale(1); } 40% { transform: scale(1.35); color: #f5a623; } 100% { transform: scale(1); } }
+@keyframes starTwinkle { 0% { transform: scale(1) rotate(0); } 35% { transform: scale(1.5) rotate(18deg); } 70% { transform: scale(.9) rotate(-8deg); } 100% { transform: scale(1) rotate(0); } }
+@keyframes floatUp { 0% { opacity: 0; transform: translateY(4px) scale(.8); } 20% { opacity: 1; } 100% { opacity: 0; transform: translateY(-22px) scale(1); } }
+
+@media (prefers-reduced-motion: reduce) {
+  .lp-mascot,
+  body.chat-open .lp-msg, body.chat-open .lp-chatinput,
+  .demo-target.pulse,
+  #score.bump, .lp-star.twinkle, .lp-plus.show, .lp-bubble.pop { animation: none !important; }
+}

@@ -1,0 +1,1288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+  <meta http-equiv="Pragma" content="no-cache" />
+  <meta http-equiv="Expires" content="0" />
+  <title>Separation Between Points | ShareYou</title>
+  <meta name="description" content="Interactive coordinate-geometry lesson on ShareYou — plot points on the grid with step-by-step AI guidance." />
+  <link rel="icon" type="image/svg+xml" href="favicon.svg" />
+  <link rel="stylesheet" href="lesson.css?v=21" />
+</head>
+<body>
+  <!-- ===== Top bar ===== -->
+  <header class="lp-top">
+    <a class="lp-close" href="index.html" aria-label="Exit lesson">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M6 6l12 12M18 6 6 18" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>
+    </a>
+    <div class="lp-progress">
+      <div class="lp-bar"><i id="barFill"></i></div>
+      <span class="lp-dot" id="dot1"></span>
+      <span class="lp-dot" id="dot2"></span>
+      <span class="lp-dot" id="dot3"></span>
+    </div>
+    <div class="lp-stats">
+      <span class="lp-stats__score">
+        <span id="score">0</span>
+        <svg id="star" class="lp-star" viewBox="0 0 24 24" fill="none"><path d="M12 3l1.8 4.7L18.5 9l-4.7 1.3L12 15l-1.8-4.7L5.5 9l4.7-1.3L12 3Z" fill="currentColor"/><path d="M19 14l.8 2.2L22 17l-2.2.8L19 20l-.8-2.2L16 17l2.2-.8L19 14Z" fill="currentColor" opacity=".6"/></svg>
+        <span class="lp-plus" id="plusBadge" aria-hidden="true"></span>
+      </span>
+      <span><svg viewBox="0 0 24 24" fill="none"><path d="M13 2 4 14h6l-1 8 9-12h-6l1-8Z" fill="#d8d8d8"/></svg></span>
+    </div>
+    <button class="sy-lang" data-sy-lang type="button" aria-label="Switch language / 切换语言">
+      <span class="sy-lang__seg" data-l="en">EN</span><span class="sy-lang__seg" data-l="zh">中</span>
+    </button>
+  </header>
+
+  <!-- ===== Stage ===== -->
+  <main class="lp-stage">
+    <div class="lp-tools">
+      <button aria-label="Flag" data-soon="Report sent — thanks!"><svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M6 21V4m0 0 9 1-2 4 5 1-12 1" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+      <button aria-label="Audio" data-soon="Audio narration is coming soon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M4 9v6h4l5 4V5L8 9H4Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M17 9a4 4 0 0 1 0 6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button>
+    </div>
+
+    <!-- chat panel (expands when the chat capsule is clicked) -->
+    <aside class="lp-chat" id="chat" hidden>
+      <div class="lp-chat__msgs">
+        <div class="lp-msg is-faded" data-i18n="lesson.welcome1">Welcome to Coordinate Geometry.</div>
+        <div class="lp-msg is-faded" data-i18n="lesson.welcome2">You'll learn how to pin down where points sit in the plane.</div>
+        <div class="lp-msg is-active" data-i18n="lesson.q1">Place a point at the coordinates (2, 1).</div>
+      </div>
+      <div class="lp-suggestions" id="suggestions"></div>
+    </aside>
+
+    <div class="lp-card">
+      <h1 class="lp-question">Place a point at the coordinates <span style="white-space:nowrap">(2, 1)</span>.</h1>
+
+      <div class="lp-grid-wrap">
+        <svg id="grid" tabindex="0" role="application" aria-label="Coordinate grid"></svg>
+      </div>
+
+      <!-- summary: preset Q&A chips, centered under the diagram -->
+      <div class="lp-bubble-chips" id="bubbleChips"></div>
+
+      <p class="lp-summary-text" id="summaryText"></p>
+
+      <button class="lp-startover" id="startover" hidden>
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M3 3v5h5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <span data-i18n="lesson.startover">Start over</span>
+      </button>
+
+      <!-- floating tutor bubble, auto-pops bottom-left near the mascot on question screens -->
+      <div class="lp-bubble">Place a point at the coordinates (2, 1).</div>
+
+    </div>
+  </main>
+
+  <!-- ===== Bottom bar ===== -->
+  <footer class="lp-bottom">
+    <button class="lp-mascot" id="mascot" type="button" aria-label="Toggle tutor chat">
+      <img src="mascot-cutout.png?v=2" alt="" aria-hidden="true" />
+    </button>
+    <div class="lp-io">
+      <button id="chatToggle" aria-label="Chat with tutor"><svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M4 5h16v11H9l-4 3V5Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg></button>
+      <span class="sep"></span>
+      <button aria-label="Microphone" data-soon="Voice input is coming soon" data-soon-zh="语音输入敬请期待"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><rect x="9" y="3" width="6" height="11" rx="3" stroke="currentColor" stroke-width="2"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button>
+    </div>
+    <div class="lp-chatinput">
+      <input type="text" placeholder="How can I help?" aria-label="Ask the tutor" />
+      <button class="lp-send" aria-label="Send message">
+        <svg class="ic-mic" width="20" height="20" viewBox="0 0 24 24" fill="none"><rect x="9" y="3" width="6" height="11" rx="3" stroke="currentColor" stroke-width="2"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        <svg class="ic-send" width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M12 20V5M6 11l6-6 6 6" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+    </div>
+    <button class="lp-check" id="check" disabled>Check</button>
+  </footer>
+
+  <!-- ===== Feedback banner ===== -->
+  <div class="lp-feedback" id="feedback">
+    <div class="lp-feedback__icon" id="fbIcon"></div>
+    <div class="lp-feedback__text"><strong id="fbTitle"></strong><span id="fbMsg"></span></div>
+    <button class="lp-feedback__btn" id="fbBtn"></button>
+  </div>
+
+  <!-- ===== Completion overlay ===== -->
+  <div class="lp-done" id="done">
+    <img class="lp-done__mascot" src="mascot-cutout.png?v=2" alt="" aria-hidden="true" />
+    <h2 data-i18n="done.title">Lesson complete!</h2>
+    <p id="doneMsg">You placed the point correctly. Keep your streak going.</p>
+    <a class="lp-done__next" href="#" id="nextLesson" hidden>Next lesson</a>
+    <a class="lp-done__back" href="index.html" data-i18n="done.back">Back to course</a>
+  </div>
+
+  <script src="app.js?v=36"></script>
+  <script>
+  (function () {
+    /* ----- grid geometry ----- */
+    var RX = 5, RY = 4, U = 46, PAD = 36;
+    var W = RX * 2 * U + PAD * 2, H = RY * 2 * U + PAD * 2;
+    var OX = PAD + RX * U, OY = PAD + RY * U;
+    /* language-aware pick */
+    function T(en, zh) { return (window.SY && SY.lang && SY.lang() === 'zh') ? zh : en; }
+    function P(en, zh) { return { en: en, zh: zh }; }                 // bilingual message/chip pair
+    function disp(p) { return (p && typeof p === 'object' && 'en' in p) ? T(p.en, p.zh) : p; }
+    /* ----- lesson content, keyed by ?lesson=<id> ----- */
+    var LESSONS = {
+      'coord-sep': {
+        id: 'coord-sep', title: P('Separation Between Points', '点之间的间距'),
+        questions: [
+          { prompt: 'Place a point at the coordinates (2, 1).', zh: '在坐标 (2, 1) 处放置一个点。',        short: '(2, 1)',  x: 2,  y: 1 },
+          { prompt: 'Now place a point at the coordinates (−1, 3).', zh: '现在在坐标 (−1, 3) 处放置一个点。', short: '(−1, 3)', x: -1, y: 3 }
+        ],
+        summary: {
+          head: P('The positions of points can be described with coordinates.', '点的位置可以用坐标来描述。'),
+          body: P('The difference in x-coordinates is their horizontal separation and the difference in y-coordinates is their vertical separation.', 'x 坐标之差是它们的水平间距，y 坐标之差是它们的垂直间距。'),
+          p1: [-1, 3], p2: [2, 1]
+        }
+      },
+      'combining': {
+        id: 'combining', title: P('Combining Separations', '组合间距'),
+        questions: [
+          { type: 'select', prompt: 'Select the point farthest from the highlighted point.', zh: '选出离高亮点最远的那个点。',
+            ref: [-2, 1], options: [[-2, -2], [2, 1], [2, -2]] },
+          { type: 'select', prompt: 'Select the point farthest from the highlighted point.', zh: '选出离高亮点最远的那个点。',
+            ref: [1, -1], options: [[1, 2], [-2, -1], [-2, 2]] }
+        ],
+        summary: {
+          hyp: true,
+          head: P('A point with both vertical and horizontal separations is farther away than a point with just the vertical or just the horizontal separation.', '同时具有垂直和水平间距的点，比只有垂直间距或只有水平间距的点离得更远。'),
+          body: P('The diagonal distance combines both legs, so it is longer than either separation on its own.', '对角距离把两段间距合在一起，所以比任何单独一段都长。'),
+          p1: [-3, 2], p2: [1, -1],
+          chips: [
+            { id: 'c_why', q: P('Why is the diagonal farther?', '为什么对角更远？'), a: P('Before the answer, check the diagram: which segment uses both a horizontal and a vertical gap? If a path must cover both at once, what kind of path is it? That path is the diagonal, so it reaches farther than either single leg.', '先不急着看结论，观察图：哪一段同时用了水平间距和垂直间距？如果一条路要同时覆盖两个方向，它会是什么形状？那就是对角线，所以它比任意单独一条边更远。') },
+            { id: 'c_pyth', q: P('What theorem is this?', '这是什么定理？'), a: P('First ask: what shape do the horizontal and vertical gaps form? They make a right triangle, and the diagonal is its hypotenuse. That is where the Pythagorean theorem comes in.', '先问自己：水平间距和垂直间距组成了什么形状？它们组成直角三角形，对角线就是斜边。这就是勾股定理出现的地方。') },
+            { id: 'c_ok', q: P('Got it, makes sense', '懂了，明白了'), a: P('Great — press Continue to finish the lesson.', '很好 —— 点「继续」完成本节。') }
+          ]
+        }
+      }
+    };
+    var LESSON_ID = (new URLSearchParams(location.search).get('lesson')) || 'coord-sep';
+    var LESSON = LESSONS[LESSON_ID] || LESSONS['coord-sep'];
+    document.body.setAttribute('data-title-en', LESSON.title.en + ' | ShareYou');
+    document.body.setAttribute('data-title-zh', LESSON.title.zh + ' | ShareYou');
+    var QUESTIONS = LESSON.questions;
+    function qText(q) { return T(q.prompt, q.zh); }
+    var qIndex = 0;
+    var ANSWER = QUESTIONS[0];
+    function xPhraseE(x) { var n = Math.abs(x); return n + ' unit' + (n === 1 ? '' : 's') + ' to the ' + (x < 0 ? 'left' : 'right'); }
+    function xPhraseZ(x) { return '向' + (x < 0 ? '左' : '右') + ' ' + Math.abs(x) + ' 格'; }
+    function yPhraseE(y) { var n = Math.abs(y); return n + ' unit' + (n === 1 ? '' : 's') + ' ' + (y < 0 ? 'down' : 'up'); }
+    function yPhraseZ(y) { return '向' + (y < 0 ? '下' : '上') + ' ' + Math.abs(y) + ' 格'; }
+    function xPhrase(x) { return T(xPhraseE(x), xPhraseZ(x)); }   // live display (grid captions)
+    function yPhrase(y) { return T(yPhraseE(y), yPhraseZ(y)); }
+    function px(x, y) { return [OX + x * U, OY - y * U]; }
+
+    var svg = document.getElementById('grid');
+    svg.setAttribute('viewBox', '0 0 ' + W + ' ' + H);
+    svg.setAttribute('width', W);
+    svg.setAttribute('height', H);
+
+    function gridBaseHTML() {
+      var s = '<defs>' +
+        '<marker id="arr" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">' +
+        '<path d="M0 0L10 5 0 10z" fill="#1a1a1a"/></marker></defs>';
+      var gx, gy, tx, ty, a, b, c, d, p, q;
+      for (gx = -RX; gx <= RX; gx++) { a = px(gx, -RY); b = px(gx, RY); s += '<line x1="'+a[0]+'" y1="'+a[1]+'" x2="'+b[0]+'" y2="'+b[1]+'" stroke="#ededed" stroke-width="1.5"/>'; }
+      for (gy = -RY; gy <= RY; gy++) { c = px(-RX, gy); d = px(RX, gy); s += '<line x1="'+c[0]+'" y1="'+c[1]+'" x2="'+d[0]+'" y2="'+d[1]+'" stroke="#ededed" stroke-width="1.5"/>'; }
+      s += '<line x1="'+px(-RX,0)[0]+'" y1="'+OY+'" x2="'+(px(RX,0)[0]+18)+'" y2="'+OY+'" stroke="#1a1a1a" stroke-width="2.5" marker-end="url(#arr)"/>';
+      s += '<line x1="'+OX+'" y1="'+(px(0,RY)[1]-18)+'" x2="'+OX+'" y2="'+px(0,-RY)[1]+'" stroke="#1a1a1a" stroke-width="2.5" marker-start="url(#arr)"/>';
+      for (tx = -RX; tx <= RX; tx++) { if (tx === 0) continue; p = px(tx, 0); s += '<line x1="'+p[0]+'" y1="'+(OY-6)+'" x2="'+p[0]+'" y2="'+(OY+6)+'" stroke="#1a1a1a" stroke-width="2.5"/>'; }
+      for (ty = -RY; ty <= RY; ty++) { if (ty === 0) continue; q = px(0, ty); s += '<line x1="'+(OX-6)+'" y1="'+q[1]+'" x2="'+(OX+6)+'" y2="'+q[1]+'" stroke="#1a1a1a" stroke-width="2.5"/>'; }
+      s += '<text x="'+(px(RX,0)[0]+20)+'" y="'+(OY+26)+'" font-size="20" font-weight="700" fill="#1a1a1a">x</text>';
+      s += '<text x="'+(OX-26)+'" y="'+(px(0,RY)[1]-16)+'" font-size="20" font-weight="700" fill="#1a1a1a">y</text>';
+      return s;
+    }
+    var o = px(0, 0);
+    svg.innerHTML = gridBaseHTML() + '<g id="hint"></g>' +
+      '<circle id="halo" class="pt" cx="'+o[0]+'" cy="'+o[1]+'" r="20" fill="#eef1ff"/>' +
+      '<circle id="dot" class="pt" cx="'+o[0]+'" cy="'+o[1]+'" r="9" fill="#4255ff"/>';
+
+    /* ----- interaction ----- */
+    var halo = document.getElementById('halo');
+    var dot = document.getElementById('dot');
+    var hint = document.getElementById('hint');
+    var check = document.getElementById('check');
+    var cx = 0, cy = 0, placed = false, dragging = false, interactive = true, demoRunning = false, wrongAns = null;
+
+    function setPoint(x, y) {
+      cx = Math.max(-RX, Math.min(RX, x));
+      cy = Math.max(-RY, Math.min(RY, y));
+      var p = px(cx, cy);
+      halo.setAttribute('cx', p[0]); halo.setAttribute('cy', p[1]);
+      dot.setAttribute('cx', p[0]); dot.setAttribute('cy', p[1]);
+    }
+    function eventToCoord(e) {
+      var r = svg.getBoundingClientRect();
+      var sx = (e.clientX - r.left) / r.width * W;
+      var sy = (e.clientY - r.top) / r.height * H;
+      return [Math.round((sx - OX) / U), Math.round((OY - sy) / U)];
+    }
+    function place(x, y) {
+      setPoint(x, y);
+      if (!placed) { placed = true; hint.style.display = 'none'; document.getElementById('startover').hidden = false; }
+      if (!check.classList.contains('is-correct')) {
+        check.classList.add('is-ready'); check.disabled = false;
+      }
+    }
+
+    /* ----- "select the farthest point" interaction (lesson: Combining Separations) ----- */
+    var selIdx = -1, selCorrect = -1;
+    function dist2(a, b) { return (a[0] - b[0]) * (a[0] - b[0]) + (a[1] - b[1]) * (a[1] - b[1]); }
+    function farthestIndex(q) { var best = 0, bd = -1; q.options.forEach(function (o, i) { var d = dist2(o, q.ref); if (d > bd) { bd = d; best = i; } }); return best; }
+    function renderSelect(q) {
+      var ex = '', r = px(q.ref[0], q.ref[1]);
+      ex += '<circle class="sel-ref" cx="' + r[0] + '" cy="' + r[1] + '" r="8" fill="#e8901b"/>';
+      q.options.forEach(function (o, i) {
+        var p = px(o[0], o[1]);
+        ex += '<g class="sel-opt" data-idx="' + i + '">';
+        ex += '<circle class="sel-ring" cx="' + p[0] + '" cy="' + p[1] + '" r="14" fill="none"/>';
+        ex += '<circle class="sel-hit" cx="' + p[0] + '" cy="' + p[1] + '" r="18" fill="transparent"/>';
+        ex += '<circle class="sel-halo" cx="' + p[0] + '" cy="' + p[1] + '" r="9" fill="#fff" stroke="#cdd6ff" stroke-width="2"/>';
+        ex += '<circle class="sel-dot" cx="' + p[0] + '" cy="' + p[1] + '" r="6" fill="#4255ff"/>';
+        ex += '</g>';
+      });
+      svg.innerHTML = gridBaseHTML() + ex;
+    }
+    function selectOption(idx) {
+      if (check.classList.contains('is-correct')) return;   // locked after a correct answer
+      selIdx = idx;
+      var opts = svg.querySelectorAll('.sel-opt');
+      for (var i = 0; i < opts.length; i++) opts[i].classList.toggle('is-sel', +opts[i].getAttribute('data-idx') === idx);
+      check.classList.add('is-ready'); check.disabled = false;
+      updateGridLabel();
+    }
+    function markSelCorrect() {
+      var g = svg.querySelector('.sel-opt[data-idx="' + selIdx + '"]');
+      if (!g) return;
+      g.classList.add('is-correct');
+      var p = px(ANSWER.options[selIdx][0], ANSWER.options[selIdx][1]);
+      g.insertAdjacentHTML('beforeend',
+        '<g class="sel-badge" transform="translate(' + (p[0] + 11) + ',' + (p[1] - 20) + ')">' +
+        '<rect x="-9" y="-9" width="18" height="18" rx="5" fill="#18b15c"/>' +
+        '<path d="M-4 0 l3 3 l6 -7" stroke="#fff" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></g>');
+    }
+    svg.addEventListener('pointerdown', function (e) {
+      if (!interactive || demoRunning) return;  // summary diagram is read-only; ignore drags mid-demo
+      if (ANSWER.type === 'select') {           // pick a candidate point instead of dragging
+        var g = e.target.closest && e.target.closest('.sel-opt');
+        if (g) selectOption(+g.getAttribute('data-idx'));
+        return;
+      }
+      e.preventDefault();                       // avoid text-selecting the axis labels
+      dragging = true; svg.classList.add('grabbing');
+      var c = eventToCoord(e); place(c[0], c[1]);
+      try { svg.setPointerCapture(e.pointerId); } catch (x) {}
+    });
+    svg.addEventListener('pointermove', function (e) {
+      if (!dragging || ANSWER.type === 'select') return; var c = eventToCoord(e); place(c[0], c[1]);
+    });
+    svg.addEventListener('pointerup', function () { dragging = false; svg.classList.remove('grabbing'); });
+
+    /* ----- keyboard placement / selection (accessibility) ----- */
+    function updateGridLabel() {
+      if (ANSWER.type === 'select') {
+        svg.setAttribute('aria-label', T('Select the point farthest from the highlighted point. ' + (selIdx >= 0 ? 'Option ' + (selIdx + 1) + ' selected. ' : '') + 'Arrow keys choose, Enter checks.',
+                                         '选出离高亮点最远的点。' + (selIdx >= 0 ? '已选第 ' + (selIdx + 1) + ' 个。' : '') + '方向键选择，回车检查。'));
+        return;
+      }
+      svg.setAttribute('aria-label', T('Coordinate grid. Point at (' + fmt(cx) + ', ' + fmt(cy) + '). Use the arrow keys to move it, Enter to check.',
+                                       '坐标网格。点在 (' + fmt(cx) + ', ' + fmt(cy) + ')。方向键移动，回车检查。'));
+    }
+    svg.addEventListener('keydown', function (e) {
+      if (!interactive || demoRunning) return;
+      var k = e.key;
+      if (ANSWER.type === 'select') {
+        var n = ANSWER.options.length;
+        if (k === 'ArrowRight' || k === 'ArrowDown') { e.preventDefault(); selectOption(((selIdx < 0 ? -1 : selIdx) + 1 + n) % n); }
+        else if (k === 'ArrowLeft' || k === 'ArrowUp') { e.preventDefault(); selectOption(((selIdx < 0 ? 0 : selIdx) - 1 + n) % n); }
+        else if (k === 'Enter' || k === ' ' || k === 'Spacebar') { e.preventDefault(); if (!check.disabled) check.click(); }
+        return;
+      }
+      var nx = cx, ny = cy, moved = true;
+      if (k === 'ArrowLeft') nx -= 1;
+      else if (k === 'ArrowRight') nx += 1;
+      else if (k === 'ArrowUp') ny += 1;
+      else if (k === 'ArrowDown') ny -= 1;
+      else if (k === 'Enter' || k === ' ' || k === 'Spacebar') { e.preventDefault(); if (!check.disabled) check.click(); return; }
+      else moved = false;
+      if (!moved) return;
+      e.preventDefault();
+      place(nx, ny);          // reuses pointer placement: sets placed, reveals Start-over, enables Check
+      updateGridLabel();
+    });
+
+    /* ----- animated walk-through demo ("Show me how") ----- */
+    var SVGNS = 'http://www.w3.org/2000/svg';
+    function mk(tag, attrs) {
+      var el = document.createElementNS(SVGNS, tag);
+      for (var k in attrs) el.setAttribute(k, attrs[k]);
+      return el;
+    }
+    /* The demo is paced by the user: one step animates, then waits for a "Next" chip.
+       Pass `wrong` (a {x,y}) to mark the learner's mis-placed point during a guided redo. */
+    function playDemo(wrong) {
+      if (demoRunning || document.body.classList.contains('summary-mode')) return;
+      var prev = document.getElementById('demo'); if (prev) prev.remove();
+      demoRunning = true;
+
+      var origin = px(0, 0), corner = px(ANSWER.x, 0), target = px(ANSWER.x, ANSWER.y);
+      var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      var g = mk('g', { id: 'demo' });
+
+      /* axis-recognition highlights (soft blue, persist under the later steps) */
+      var xA = px(-RX, 0), xB = px(RX, 0);
+      var xAxisHi = mk('line', { 'class': 'demo-axis', x1: xA[0], y1: OY, x2: xB[0] + 18, y2: OY, opacity: 0 });
+      var yT = px(0, RY), yB = px(0, -RY);
+      var yAxisHi = mk('line', { 'class': 'demo-axis', x1: OX, y1: yT[1] - 18, x2: OX, y2: yB[1], opacity: 0 });
+      g.appendChild(xAxisHi); g.appendChild(yAxisHi);
+
+      /* movement traces (collapsed) + captions + target ring + travelling marker */
+      var hLine = mk('line', { 'class': 'demo-trace', x1: origin[0], y1: origin[1], x2: origin[0], y2: origin[1] });
+      var vLine = mk('line', { 'class': 'demo-trace', x1: corner[0], y1: corner[1], x2: corner[0], y2: corner[1] });
+      var hCap = mk('text', { 'class': 'demo-cap', x: (origin[0] + corner[0]) / 2, y: origin[1] + (ANSWER.y >= 0 ? 26 : -14), 'text-anchor': 'middle', opacity: 0 });
+      hCap.textContent = xPhrase(ANSWER.x);
+      var vCap = mk('text', { 'class': 'demo-cap', x: corner[0] + (ANSWER.x >= 0 ? 14 : -14), y: (corner[1] + target[1]) / 2 + 5, 'text-anchor': ANSWER.x >= 0 ? 'start' : 'end', opacity: 0 });
+      vCap.textContent = yPhrase(ANSWER.y);
+      var ring = mk('circle', { 'class': 'demo-target', cx: target[0], cy: target[1], r: 14, opacity: 0 });
+      var marker = mk('circle', { 'class': 'demo-marker', cx: origin[0], cy: origin[1], r: 8, opacity: 0 });
+      g.appendChild(hLine); g.appendChild(vLine); g.appendChild(hCap); g.appendChild(vCap); g.appendChild(ring); g.appendChild(marker);
+
+      /* red × at the learner's mis-placed point (guided redo); fades when movement starts */
+      var wm = null;
+      if (wrong) {
+        var wp = px(wrong.x, wrong.y);
+        wm = mk('g', { 'class': 'demo-wrong' });
+        wm.appendChild(mk('line', { x1: wp[0] - 9, y1: wp[1] - 9, x2: wp[0] + 9, y2: wp[1] + 9 }));
+        wm.appendChild(mk('line', { x1: wp[0] + 9, y1: wp[1] - 9, x2: wp[0] - 9, y2: wp[1] + 9 }));
+        g.appendChild(wm);
+      }
+
+      svg.insertBefore(g, halo);
+
+      var ease = function (t) { return 1 - Math.pow(1 - t, 3); };   // ease-out cubic
+      function tween(dur, step, done) {
+        if (reduce) { step(1); if (done) done(); return; }   // reduced motion: jump to end
+        var t0 = null;
+        function frame(now) {
+          if (t0 === null) t0 = now;
+          var t = Math.min(1, (now - t0) / dur);
+          step(ease(t));
+          if (t < 1) requestAnimationFrame(frame); else if (done) done();
+        }
+        requestAnimationFrame(frame);
+      }
+      function revealAxis(el, done) { tween(450, function (k) { el.setAttribute('opacity', (0.32 * k).toFixed(3)); }, done); }
+      function tweenLeg(line, from, to, cap, done) {
+        cap.setAttribute('opacity', 1); marker.setAttribute('opacity', 1);
+        tween(900, function (k) {
+          var x = from[0] + (to[0] - from[0]) * k, y = from[1] + (to[1] - from[1]) * k;
+          line.setAttribute('x2', x); line.setAttribute('y2', y);
+          marker.setAttribute('cx', x); marker.setAttribute('cy', y);
+        }, done);
+      }
+
+      var steps = [
+        { msg: P("First, the x-axis — it runs left and right. The first number tells you how far along it to go.", "首先看 x 轴 —— 它沿左右方向延伸，第一个数字告诉你沿它走多远。"),
+          run: function (done) { revealAxis(xAxisHi, done); } },
+        { msg: P("And the y-axis runs up and down. The second number tells you how far up or down.", "再看 y 轴 —— 它沿上下方向延伸，第二个数字告诉你向上或向下走多远。"),
+          run: function (done) { revealAxis(yAxisHi, done); } },
+        { msg: P("Start at the origin (0, 0) and move " + xPhraseE(ANSWER.x) + " along the x-axis.", "从原点 (0, 0) 出发，沿 x 轴" + xPhraseZ(ANSWER.x) + "。"),
+          run: function (done) { tweenLeg(hLine, origin, corner, hCap, done); } },
+        { msg: P("Now move " + yPhraseE(ANSWER.y) + " — that lands you exactly on " + ANSWER.short + ".", "再" + yPhraseZ(ANSWER.y) + " —— 正好落在 " + ANSWER.short + "。"),
+          run: function (done) { tweenLeg(vLine, corner, target, vCap, function () { ring.setAttribute('opacity', 1); ring.classList.add('pulse'); done(); }); },
+          last: true }
+      ];
+
+      function removeDemoChip() { sugWrap.innerHTML = ''; }
+      function showDemoChip(label, onClick) {
+        sugWrap.innerHTML = '';
+        var b = document.createElement('button');
+        b.type = 'button'; b.className = 'lp-chip lp-chip--next'; b.textContent = label;
+        b.addEventListener('click', function () { onClick(); });
+        sugWrap.appendChild(b);
+      }
+      function endDemo() {
+        var node = document.getElementById('demo');
+        if (node) { node.classList.add('fade-out'); setTimeout(function () { if (node.parentNode) node.parentNode.removeChild(node); }, 420); }
+        demoRunning = false;
+        renderChips();   // restore the normal Q&A chips (Show me how stays consumed)
+      }
+      function runStep(i) {
+        removeDemoChip();                 // hide the Next chip while a step animates
+        if (i === 2 && wm) wm.classList.add('gone');   // fade the wrong-marker as the correct path is traced
+        var s = steps[i];
+        addMsg(s.msg, 'tutor');           // post the step's explanation into the chat
+        s.run(function () {
+          if (s.last) showDemoChip(T('Got it', '明白了'), endDemo);
+          else        showDemoChip(T('Next', '下一步'), function () { runStep(i + 1); });
+        });
+      }
+      runStep(0);
+    }
+
+    /* ----- diagnose a wrong answer, then run the guided redo ----- */
+    function fmt(n) { return ('' + n).replace('-', '−'); }   // unicode minus, matches QUESTIONS.short
+    function diagnoseText(w) {
+      var a = ANSWER, here = '(' + fmt(w.x) + ', ' + fmt(w.y) + ')';
+      if (w.x === a.y && w.y === a.x && a.x !== a.y) {
+        return P("You placed it at " + here + " — that's the right numbers but swapped. (x, y) puts the x-coordinate first, so go " + xPhraseE(a.x) + ", then " + yPhraseE(a.y) + ".",
+                 "你把点放在了 " + here + " —— 数字对了但顺序反了。(x, y) 中 x 在前，所以先" + xPhraseZ(a.x) + "，再" + yPhraseZ(a.y) + "。");
+      }
+      var pe = [], pz = [];
+      if (w.x !== a.x) { pe.push("its x-coordinate to be " + fmt(a.x) + " (" + xPhraseE(a.x) + "), not " + fmt(w.x)); pz.push("x 坐标应是 " + fmt(a.x) + "（" + xPhraseZ(a.x) + "），而不是 " + fmt(w.x)); }
+      if (w.y !== a.y) { pe.push("its y-coordinate to be " + fmt(a.y) + " (" + yPhraseE(a.y) + "), not " + fmt(w.y)); pz.push("y 坐标应是 " + fmt(a.y) + "（" + yPhraseZ(a.y) + "），而不是 " + fmt(w.y)); }
+      return P("You placed it at " + here + ", but " + a.short + " needs " + pe.join("; ") + ". Let's redo it together.",
+               "你把点放在了 " + here + "，但 " + a.short + " 需要" + pz.join("；") + "。我们一起重做一遍。");
+    }
+    function explainAndRedo() {
+      var w = wrongAns || { x: cx, y: cy };
+      addMsg(diagnoseText(w), 'tutor');     // diagnosis posts first (instant, in order)
+      setPoint(0, 0); placed = false;       // clean slate for the guided redo
+      check.className = 'lp-check'; check.disabled = true; check.textContent = T('Check', '检查');
+      document.getElementById('startover').hidden = true;
+      hideFeedback();
+      playDemo(w);                          // stepped guidance, now also showing the wrong-marker
+    }
+
+    /* ----- check / feedback ----- */
+    var fb = document.getElementById('feedback');
+    var fbIcon = document.getElementById('fbIcon');
+    var fbTitle = document.getElementById('fbTitle');
+    var fbMsg = document.getElementById('fbMsg');
+    var fbBtn = document.getElementById('fbBtn');
+    var TICK = '<svg width="26" height="26" viewBox="0 0 24 24" fill="none"><path d="m5 12 5 5 9-10" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+    var CROSS = '<svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M7 7l10 10M17 7 7 17" stroke="#fff" stroke-width="3" stroke-linecap="round"/></svg>';
+
+    var fbTimer = null;
+    function showFeedback(ok) {
+      fb.className = 'lp-feedback show ' + (ok ? 'correct' : 'wrong');
+      fbIcon.innerHTML = ok ? TICK : CROSS;
+      fbTitle.textContent = ok ? T('Correct!', '答对了！') : T('Not quite', '还差一点');
+      if (ANSWER.type === 'select') {
+        fbMsg.textContent = ok ? T('That point is the farthest — both separations add up.', '那个点最远 —— 两段间距叠加在一起。')
+                               : T('Not the farthest — look for the point with both separations.', '不是最远的 —— 找同时有水平和垂直间距的那个点。');
+      } else {
+        fbMsg.textContent = ok ? T('Nice work — that’s ' + ANSWER.short + '.', '太棒了 —— 正是 ' + ANSWER.short + '。') : T('Move the point to ' + ANSWER.short + ' and try again.', '把点移到 ' + ANSWER.short + ' 再试一次。');
+      }
+      fbBtn.textContent = ok ? T('Continue', '继续') : T('Got it', '知道了');
+      if (fbTimer) clearTimeout(fbTimer);
+      fbTimer = setTimeout(hideFeedback, 2000);   // auto-close after 2s
+    }
+    function hideFeedback() { fb.classList.remove('show'); if (fbTimer) { clearTimeout(fbTimer); fbTimer = null; } }
+
+    /* ----- score: +15 and a twinkling star per correct answer ----- */
+    var score = 0, POINTS = 15;
+    function retrigger(el, cls, ms) {
+      el.classList.remove(cls); void el.getBoundingClientRect(); el.classList.add(cls);
+      setTimeout(function () { el.classList.remove(cls); }, ms);
+    }
+    function awardPoints(n) {
+      var from = score, to = score + n; score = to;
+      var star = document.getElementById('star');
+      var scoreEl = document.getElementById('score');
+      var plus = document.getElementById('plusBadge');
+      star.classList.add('lit'); retrigger(star, 'twinkle', 720);
+      scoreEl.classList.add('lp-score-lit'); retrigger(scoreEl, 'bump', 520);
+      plus.textContent = '+' + n; retrigger(plus, 'show', 1000);
+      var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      if (reduce) { scoreEl.textContent = to; return; }
+      var t0 = null, dur = 600;
+      function frame(now) {
+        if (t0 === null) t0 = now;
+        var t = Math.min(1, (now - t0) / dur);
+        scoreEl.textContent = Math.round(from + (to - from) * t);
+        if (t < 1) requestAnimationFrame(frame);
+      }
+      requestAnimationFrame(frame);
+    }
+
+    /* commit this lesson's points + completion to the shared store (once) */
+    var committed = false;
+    function commitProgress() {
+      if (committed || !window.SY) return;
+      committed = true;
+      var first = !SY.isDone(LESSON.id);       // award XP only the first time the lesson is finished
+      if (first) { SY.addXP(score); SY.bumpStreakToday(); }
+      SY.markDone(LESSON.id);
+      SY.markToday();
+      var m = document.getElementById('doneMsg');
+      if (m) m.textContent = first ? T('You earned ' + score + ' XP. Keep your streak going.', '你获得了 ' + score + ' XP，继续保持连胜！') : T('Lesson reviewed — nice refresher!', '已复习本节 —— 温故知新！');
+      /* offer the next lesson, if there is one */
+      var nx = SY.nextPlayable(LESSON.id), nextBtn = document.getElementById('nextLesson');
+      if (nextBtn) {
+        if (nx) { nextBtn.hidden = false; nextBtn.href = 'lesson.html?lesson=' + nx.id + '&ui=2'; nextBtn.textContent = T('Next: ' + nx.title.en, '下一节：' + nx.title.zh); }
+        else { nextBtn.hidden = true; }
+      }
+    }
+
+    check.addEventListener('click', function () {
+      if (check.disabled) return;
+      if (document.body.classList.contains('summary-mode')) { commitProgress(); document.getElementById('done').classList.add('show'); return; }
+      if (check.classList.contains('is-correct')) { continueLesson(); return; }
+      if (ANSWER.type === 'select') {
+        var sok = (selIdx === selCorrect);
+        showFeedback(sok);
+        setChatState(sok ? 'correct' : 'wrong');
+        tutorAuto(sok);
+        popBubble(sok ? P('Nice!', '太棒了！') : selectSocraticPrompt(learning.currentSocraticStep));
+        if (sok) {
+          markSelCorrect();
+          check.classList.remove('is-ready'); check.classList.add('is-correct');
+          check.textContent = T('Continue', '继续');
+          setProgress(qIndex + 1);
+          celebrate();
+          awardPoints(POINTS);
+        }
+        return;
+      }
+      var ok = (cx === ANSWER.x && cy === ANSWER.y);
+      if (!ok) wrongAns = { x: cx, y: cy };   // freeze the submitted answer for diagnosis
+      showFeedback(ok);
+      setChatState(ok ? 'correct' : 'wrong');
+      tutorAuto(ok);
+      if (ok) {
+        check.classList.remove('is-ready'); check.classList.add('is-correct');
+        check.textContent = T('Continue', '继续');
+        setProgress(qIndex + 1);
+        celebrate();
+        awardPoints(POINTS);
+      }
+    });
+    fbBtn.addEventListener('click', function () {
+      var wasCorrect = fb.classList.contains('correct');
+      hideFeedback();
+      if (wasCorrect) { continueLesson(); }
+    });
+
+    /* ----- chat panel toggle (chat capsule + mascot both toggle) ----- */
+    var chat = document.getElementById('chat');
+    var mascot = document.getElementById('mascot');
+    function popMascot() {
+      if (!mascot) return;
+      mascot.classList.remove('pop'); void mascot.getBoundingClientRect(); mascot.classList.add('pop');
+      setTimeout(function () { mascot.classList.remove('pop'); }, 520);
+    }
+    function celebrate() {
+      if (!mascot) return;
+      mascot.classList.remove('celebrate'); void mascot.getBoundingClientRect(); mascot.classList.add('celebrate');
+      setTimeout(function () { mascot.classList.remove('celebrate'); }, 1100);
+    }
+    /* floating "mascot speech bubble" that pops into view (question screens only) */
+    var bubbleEl = document.querySelector('.lp-bubble');
+    var bubbleMsg = null;
+    function popBubble(pair) {
+      bubbleMsg = pair;
+      bubbleEl.textContent = disp(pair);
+      bubbleEl.classList.remove('pop'); void bubbleEl.getBoundingClientRect(); bubbleEl.classList.add('pop');
+      setTimeout(function () { bubbleEl.classList.remove('pop'); }, 500);
+      popMascot();
+    }
+    function refreshBubble() { if (bubbleMsg) bubbleEl.textContent = disp(bubbleMsg); }
+    function toggleChat() {
+      var open = document.body.classList.toggle('chat-open');
+      chat.hidden = !open;
+      popMascot();
+      if (open) { var f = document.querySelector('.lp-chatinput input'); if (f) f.focus(); }
+    }
+    document.getElementById('chatToggle').addEventListener('click', toggleChat);
+    if (mascot) { mascot.style.cursor = 'pointer'; mascot.addEventListener('click', toggleChat); }
+
+    /* ----- chat: suggested questions + send ----- */
+    var msgs = document.querySelector('.lp-chat__msgs');
+    var input = document.querySelector('.lp-chatinput input');
+    var inputWrap = document.querySelector('.lp-chatinput');
+    var sendBtn = document.querySelector('.lp-send');
+    var sugWrap = document.getElementById('suggestions');
+
+    /* suggested questions per answer-state, tailored to the current point */
+    function chipSetsFor(q) {
+      var c = q.short;
+      var xpE = xPhraseE(q.x), xpZ = xPhraseZ(q.x), ypE = yPhraseE(q.y), ypZ = yPhraseZ(q.y);
+      var last = (qIndex >= QUESTIONS.length - 1);
+      return {
+        initial: [
+          { id: 'show', q: P("Show me how", "演示一下"), demo: true,   a: P("Sure — let's go one step at a time. Tap Next after each step.", "好的 —— 我们一步一步来。每一步后点「下一步」。") },
+          { id: 'read', q: P("How do I read coordinates?", "坐标怎么读？"), a: P("Coordinates are written (x, y): the first number is how far along the x-axis, the second is how far up the y-axis.", "坐标写作 (x, y)：第一个数是沿 x 轴的距离，第二个数是沿 y 轴向上的距离。") },
+          { id: 'xgo', q: P("Where does the x go?", "x 往哪走？"),       a: P("The x-coordinate moves you left or right from the origin. For " + c + ", move " + xpE + ".", "x 坐标决定从原点向左还是向右。对于 " + c + "，要" + xpZ + "。") },
+          { id: 'ygo', q: P("Where does the y go?", "y 往哪走？"),       a: P("The y-coordinate moves you up or down. For " + c + ", go " + ypE + " after the x move.", "y 坐标决定向上还是向下。对于 " + c + "，走完 x 之后再" + ypZ + "。") },
+          { id: 'hint', q: P("Give me a hint", "给点提示"),             a: P("Start at the origin (0, 0): go " + xpE + ", then " + ypE + ", and drop the point there.", "从原点 (0, 0) 出发：先" + xpZ + "，再" + ypZ + "，把点放在那里。") }
+        ],
+        wrong: [
+          { id: 'show', q: P("Show me how", "演示一下"), demo: true,   a: P("No problem — let's walk through it one step at a time. Tap Next after each step.", "没关系 —— 我们一步一步走一遍。每一步后点「下一步」。") },
+          { id: 'wrong', q: P("What did I do wrong?", "我哪里错了？"), diagnose: true },
+          { id: 'stronger', q: P("Give me a stronger hint", "再给点提示"),    a: P("From the origin, go " + xpE + " along the x-axis, then " + ypE + " — drop it exactly there.", "从原点沿 x 轴" + xpZ + "，再" + ypZ + " —— 就放在那里。") },
+          { id: 'answer', q: P("What's the answer?", "答案是什么？"),         a: P("The point " + c + " is " + xpE + " and " + ypE + " from the origin — drag the blue dot there!", "点 " + c + " 在原点" + xpZ + "、" + ypZ + "的位置 —— 把蓝点拖过去！") }
+        ],
+        correct: [
+          { id: 'why', q: P("Why does the order matter?", "顺序为什么重要？"), a: P("In (x, y) the x always comes first. Swapping the two numbers would land you somewhere different.", "在 (x, y) 中 x 永远在前。把两个数字调换会落到不同的位置。") },
+          { id: 'whatnext', q: P("What's next?", "接下来呢？"),               a: last ? P("That was the last point — press Continue to finish the lesson!", "这是最后一个点 —— 点「继续」完成本节！") : P("Press Continue and I'll give you the next point to plot.", "点「继续」，我会给你下一个要标的点。") }
+        ]
+      };
+    }
+    var chipSets;
+    var usedQs = {};
+    var chatState = 'initial';
+    /* fallback replies for free-typed questions (computed per call so they follow the language) */
+    var replyIdx = 0;
+    function replies() {
+      return [
+        P("Good question! Plot the x-coordinate first, then go up or down for the y.", "好问题！先标出 x 坐标，再上下移动确定 y。"),
+        P("Remember: (x, y) means right/left first, then up/down.", "记住：(x, y) 表示先左右、再上下。"),
+        P("The first number runs along the x-axis, the second up the y-axis.", "第一个数沿 x 轴，第二个数沿 y 轴向上。"),
+        P("You've got this — drag the blue point to the target coordinates.", "你可以的 —— 把蓝点拖到目标坐标。")
+      ];
+    }
+
+    function addMsg(text, who) {
+      var en = (text && typeof text === 'object') ? text.en : text;
+      var zh = (text && typeof text === 'object') ? text.zh : text;
+      var d = document.createElement('div');
+      d.className = 'lp-msg ' + (who === 'user' ? 'is-user' : 'is-tutor');
+      d.setAttribute('data-en', en); d.setAttribute('data-zh', zh);
+      d.textContent = T(en, zh);
+      msgs.appendChild(d);
+      msgs.scrollTop = msgs.scrollHeight;
+      return d;
+    }
+    /* re-translate every already-posted chat bubble that carries both languages */
+    function retranslateChat() {
+      var all = msgs.querySelectorAll('.lp-msg');
+      for (var i = 0; i < all.length; i++) {
+        var e = all[i];
+        if (e.classList.contains('lp-typing')) continue;
+        if (e.hasAttribute('data-en')) e.textContent = T(e.getAttribute('data-en'), e.getAttribute('data-zh'));
+      }
+    }
+    function showTyping() {
+      var d = document.createElement('div');
+      d.className = 'lp-msg is-tutor lp-typing';
+      d.innerHTML = '<span></span><span></span><span></span>';
+      msgs.appendChild(d);
+      msgs.scrollTop = msgs.scrollHeight;
+      return d;
+    }
+    function reply(text) {
+      var typing = showTyping();
+      setTimeout(function () { typing.remove(); addMsg(text, 'tutor'); }, 1100);
+    }
+    function openChat() {
+      if (!document.body.classList.contains('chat-open')) {
+        document.body.classList.add('chat-open');
+        chat.hidden = false;
+        popMascot();
+      }
+    }
+    /* tutor proactively pops a message into the chat after a Check */
+    function tutorAuto(ok) {
+      openChat();
+      reply(ok
+        ? P("Nice — " + ANSWER.short + " is exactly right! 🎉", "漂亮 —— " + ANSWER.short + " 完全正确！🎉")
+        : P("Hmm, that's not " + ANSWER.short + " yet. Put the x first (right / left), then the y (up / down). Want a hand?", "嗯，还不是 " + ANSWER.short + "。先放 x（左右），再放 y（上下）。需要帮忙吗？"));
+    }
+    function sendMessage(text, answer) {
+      addMsg(text, 'user');
+      var r = replies();
+      reply(answer || r[replyIdx++ % r.length]);
+    }
+    function updateSendState() {
+      inputWrap.classList.toggle('has-text', !!(input.value && input.value.trim()));
+    }
+    function sendFromInput() {
+      var t = (input.value || '').trim();
+      if (!t) return;
+      sendMessage(t);
+      input.value = '';
+      updateSendState();
+    }
+    input.addEventListener('input', updateSendState);
+    input.addEventListener('keydown', function (e) { if (e.key === 'Enter') { e.preventDefault(); sendFromInput(); } });
+    sendBtn.addEventListener('click', function () { if (inputWrap.classList.contains('has-text')) sendFromInput(); });
+
+    /* chips for the "select the farthest point" lesson */
+    function selectChipsFor(q) {
+      return {
+        initial: [
+          { id: 'cmp', q: P('How do I compare distances?', '怎么比较远近？'), a: P('Before deciding, ask yourself: what is the sideways gap, and what is the vertical gap?', '决定之前先问自己：横向间距是多少？垂直间距是多少？') },
+          { id: 'hint', q: P('Give me a hint', '给点提示'), a: P('Pick one candidate and count both gaps from the orange point. Then do the same for the next candidate.', '选一个候选点，从橙色点开始数两个方向的间距。然后对下一个候选点做同样的事。') }
+        ],
+        wrong: [
+          { id: 'diag-direction', q: P('Which direction did I compare?', '我刚才比较了哪个方向？'), a: P('Start by naming the direction you used. Was it only sideways, only vertical, or both?', '先说出你刚才用了哪个方向：只看横向、只看纵向，还是两个方向都看？') },
+          { id: 'diag-both', q: P('Did I check both gaps?', '我检查了两个间距吗？'), a: P('Check each candidate from the orange point. Which one has a sideways gap and a vertical gap?', '从橙色点逐个检查候选点。哪一个既有横向间距，也有纵向间距？') },
+          { id: 'diag-reason', q: P('Can I reason it out step by step?', '我能一步步推出来吗？'), a: P('Compare sideways gaps, compare vertical gaps, then ask which point makes the diagonal path.', '先比较横向间距，再比较纵向间距，然后问哪个点形成了对角路径。') }
+        ],
+        correct: [
+          { id: 'whyf', q: P('What made that one farther?', '它为什么更远？'), a: P('What did you notice: did it use one gap, or did it use both a sideways and vertical gap?', '你观察到了什么：它只用了一个方向的间距，还是同时用了横向和纵向间距？') }
+        ]
+      };
+    }
+    /* ----- multi-question flow ----- */
+    var TOTAL_STEPS = QUESTIONS.length + 1;   // 2 questions + the summary = 3 progress steps
+    function setProgress(done) {
+      document.getElementById('barFill').style.width = Math.max(8, Math.round(done / TOTAL_STEPS * 100)) + '%';
+      for (var k = 1; k <= 3; k++) {
+        var d = document.getElementById('dot' + k);
+        if (d) d.classList.toggle('is-done', k <= done);
+      }
+    }
+    function renderPrevDots() {
+      var olds = svg.querySelectorAll('.prev-dot');
+      for (var i = 0; i < olds.length; i++) olds[i].remove();
+      for (var k = 0; k < qIndex; k++) {
+        var p = px(QUESTIONS[k].x, QUESTIONS[k].y);
+        var c = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+        c.setAttribute('class', 'prev-dot');
+        c.setAttribute('cx', p[0]); c.setAttribute('cy', p[1]); c.setAttribute('r', 8);
+        c.setAttribute('fill', '#e8901b');
+        svg.insertBefore(c, halo);
+      }
+    }
+    function refreshChipSets() {
+      chipSets = (ANSWER.type === 'select') ? selectChipsFor(ANSWER) : chipSetsFor(ANSWER);
+    }
+    function setChatState(s) {
+      chatState = s;
+      refreshChipSets();
+      renderChips();
+    }
+    function renderChips() {
+      sugWrap.innerHTML = '';
+      var list = (chipSets && chipSets[chatState]) ? chipSets[chatState] : [];
+      list.forEach(function (p) {
+        if (usedQs[p.id]) return;
+        var b = document.createElement('button');
+        b.type = 'button'; b.className = 'lp-chip'; b.textContent = disp(p.q);
+        b.addEventListener('click', function () {
+          usedQs[p.id] = true;
+          if (p.diagnose) { openChat(); explainAndRedo(); renderChips(); return; }
+          openChat();
+          sendMessage(p.q, p.a);
+          renderChips();
+          if (p.demo) playDemo(wrongAns);
+        });
+        sugWrap.appendChild(b);
+      });
+    }
+    function setActiveMessage(p) {
+      var old = msgs.querySelector('.lp-msg.is-active');
+      if (old) { old.classList.remove('is-active'); old.classList.add('is-tutor'); }
+      var en = (p && typeof p === 'object') ? p.en : p, zh = (p && typeof p === 'object') ? p.zh : p;
+      var d = document.createElement('div');
+      d.className = 'lp-msg is-active';
+      d.setAttribute('data-en', en); d.setAttribute('data-zh', zh);
+      d.textContent = T(en, zh);
+      msgs.appendChild(d);
+      msgs.scrollTop = msgs.scrollHeight;
+    }
+    function loadQuestion(i) {
+      qIndex = i;
+      ANSWER = QUESTIONS[i];
+      document.body.classList.remove('chat-open');   // each question starts with the chat closed
+      chat.hidden = true;
+      document.querySelector('.lp-question').textContent = qText(ANSWER);
+      document.getElementById('bubbleChips').innerHTML = '';   // summary-only strip
+      popBubble(P(ANSWER.prompt, ANSWER.zh));                  // floating bubble pops near the mascot
+      if (i > 0) {
+        setActiveMessage(P(ANSWER.prompt, ANSWER.zh));
+      } else {
+        var firstActive = msgs.querySelector('.lp-msg.is-active');
+        if (firstActive) {
+          firstActive.removeAttribute('data-i18n');
+          firstActive.setAttribute('data-en', ANSWER.prompt);
+          firstActive.setAttribute('data-zh', ANSWER.zh);
+          firstActive.textContent = qText(ANSWER);
+        }
+      }
+      var dm = document.getElementById('demo'); if (dm) dm.remove(); demoRunning = false;
+      check.className = 'lp-check'; check.disabled = true; check.textContent = T('Check', '检查');
+      document.getElementById('startover').hidden = true;
+      hideFeedback();
+      setProgress(i);
+      if (ANSWER.type === 'select') {
+        renderSelect(ANSWER); selIdx = -1; selCorrect = farthestIndex(ANSWER);
+        updateGridLabel();
+        usedQs = {}; chatState = 'initial'; chipSets = selectChipsFor(ANSWER); renderChips();
+      } else {
+        placed = false; setPoint(0, 0); hint.style.display = ''; updateGridLabel();
+        renderPrevDots();
+        usedQs = {}; chatState = 'initial'; chipSets = chipSetsFor(ANSWER); renderChips();
+      }
+    }
+    function continueLesson() {
+      hideFeedback();
+      if (qIndex < QUESTIONS.length - 1) { loadQuestion(qIndex + 1); }
+      else { showSummary(); }
+    }
+
+    /* ----- knowledge-summary screen (generalised to the lesson's two key points) ----- */
+    function ptLabel(p) { return '(' + fmt(p[0]) + ', ' + fmt(p[1]) + ')'; }
+    function renderSummary() {
+      var s = LESSON.summary;
+      if (s.hyp) { renderSummarySchematic(); return; }   // clean axes-only schematic (combining lesson)
+      var P1 = s.p1, P2 = s.p2;
+      var A = px(P1[0], P1[1]), C = px(P1[0], P2[1]), B = px(P2[0], P2[1]);   // A → corner → B
+      var dx = Math.abs(P1[0] - P2[0]), dy = Math.abs(P1[1] - P2[1]);
+      var ex = '';
+      ex += '<polyline points="' + A[0] + ',' + A[1] + ' ' + C[0] + ',' + C[1] + ' ' + B[0] + ',' + B[1] + '" fill="none" stroke="' + (s.hyp ? '#9a9aa0' : '#4255ff') + '" stroke-width="' + (s.hyp ? 2 : 3) + '" stroke-linecap="round" stroke-linejoin="round"/>';
+      if (s.hyp) {   /* the diagonal (hypotenuse) is longer than either leg */
+        ex += '<line x1="' + A[0] + '" y1="' + A[1] + '" x2="' + B[0] + '" y2="' + B[1] + '" stroke="#4255ff" stroke-width="3.5" stroke-linecap="round"/>';
+        ex += '<text x="' + ((A[0] + B[0]) / 2 + 10) + '" y="' + ((A[1] + B[1]) / 2 - 6) + '" font-size="15" font-weight="700" fill="#4255ff" text-anchor="start">&gt; a, &gt; b</text>';
+      }
+      /* vertical bracket beside the vertical leg, on the side away from B */
+      var vSide = (P1[0] <= P2[0]) ? -1 : 1, vx = C[0] + vSide * 16;
+      ex += '<line x1="' + vx + '" y1="' + A[1] + '" x2="' + vx + '" y2="' + C[1] + '" stroke="#8a8a8a" stroke-width="2"/>';
+      ex += '<line x1="' + (vx - 6) + '" y1="' + A[1] + '" x2="' + (vx + 6) + '" y2="' + A[1] + '" stroke="#8a8a8a" stroke-width="2"/>';
+      ex += '<line x1="' + (vx - 6) + '" y1="' + C[1] + '" x2="' + (vx + 6) + '" y2="' + C[1] + '" stroke="#8a8a8a" stroke-width="2"/>';
+      ex += '<text x="' + (vx + vSide * 10) + '" y="' + ((A[1] + C[1]) / 2 + 7) + '" font-size="' + (s.hyp ? 18 : 22) + '" font-style="' + (s.hyp ? 'italic' : 'normal') + '" font-weight="700" fill="#333" text-anchor="' + (vSide < 0 ? 'end' : 'start') + '">' + (s.hyp ? 'a' : dy) + '</text>';
+      /* horizontal bracket beside the horizontal leg, on the side away from A */
+      var hSide = (P1[1] >= P2[1]) ? 1 : -1, hy = C[1] + hSide * 16, midx = (C[0] + B[0]) / 2;
+      ex += '<line x1="' + C[0] + '" y1="' + hy + '" x2="' + (midx - 14) + '" y2="' + hy + '" stroke="#8a8a8a" stroke-width="2"/>';
+      ex += '<line x1="' + (midx + 14) + '" y1="' + hy + '" x2="' + B[0] + '" y2="' + hy + '" stroke="#8a8a8a" stroke-width="2"/>';
+      ex += '<line x1="' + C[0] + '" y1="' + (hy - 6) + '" x2="' + C[0] + '" y2="' + (hy + 6) + '" stroke="#8a8a8a" stroke-width="2"/>';
+      ex += '<line x1="' + B[0] + '" y1="' + (hy - 6) + '" x2="' + B[0] + '" y2="' + (hy + 6) + '" stroke="#8a8a8a" stroke-width="2"/>';
+      ex += '<text x="' + midx + '" y="' + (hy + hSide * 8 + (hSide < 0 ? -4 : 8)) + '" font-size="' + (s.hyp ? 18 : 22) + '" font-style="' + (s.hyp ? 'italic' : 'normal') + '" font-weight="700" fill="#333" text-anchor="middle">' + (s.hyp ? 'b' : dx) + '</text>';
+      /* the two points (orange + blue for the combining lesson, else two blue with coord labels) */
+      ex += '<circle cx="' + A[0] + '" cy="' + A[1] + '" r="7" fill="#4255ff"/>';
+      ex += '<circle cx="' + B[0] + '" cy="' + B[1] + '" r="7" fill="' + (s.hyp ? '#e8901b' : '#4255ff') + '"/>';
+      if (!s.hyp) {
+        ex += '<text x="' + A[0] + '" y="' + (A[1] - 16) + '" font-size="17" font-weight="700" fill="#1a1a1a" text-anchor="middle">' + ptLabel(P1) + '</text>';
+        ex += '<text x="' + (B[0] + 16) + '" y="' + (B[1] - 14) + '" font-size="17" font-weight="700" fill="#1a1a1a" text-anchor="middle">' + ptLabel(P2) + '</text>';
+      }
+      svg.innerHTML = gridBaseHTML() + ex;
+    }
+    /* clean axes-only schematic for the hypotenuse (combining) summary — matches the reference */
+    function renderSummarySchematic() {
+      var ox = 140, oy = 360;                                  // axes meet here
+      var ax = 215, ay = 175, bx = 410, by = 300;              // blue (top-left) → orange (bottom-right)
+      var g = '#9a9aa0', dim = '#8a8a8a';
+      var h = '';
+      // y-axis + x-axis with arrowheads
+      h += '<line x1="' + ox + '" y1="' + oy + '" x2="' + ox + '" y2="92" stroke="#1a1a1a" stroke-width="2.5" stroke-linecap="round"/>';
+      h += '<polygon points="' + ox + ',80 ' + (ox - 6) + ',95 ' + (ox + 6) + ',95" fill="#1a1a1a"/>';
+      h += '<line x1="' + ox + '" y1="' + oy + '" x2="468" y2="' + oy + '" stroke="#1a1a1a" stroke-width="2.5" stroke-linecap="round"/>';
+      h += '<polygon points="480,' + oy + ' 465,' + (oy - 6) + ' 465,' + (oy + 6) + '" fill="#1a1a1a"/>';
+      h += '<text x="' + (ox - 22) + '" y="104" font-size="20" font-weight="700" fill="#1a1a1a">y</text>';
+      h += '<text x="472" y="388" font-size="20" font-weight="700" fill="#1a1a1a">x</text>';
+      // legs (grey) + hypotenuse (blue)
+      h += '<polyline points="' + ax + ',' + ay + ' ' + ax + ',' + by + ' ' + bx + ',' + by + '" fill="none" stroke="' + g + '" stroke-width="2.5" stroke-linejoin="round"/>';
+      h += '<line x1="' + ax + '" y1="' + ay + '" x2="' + bx + '" y2="' + by + '" stroke="#4255ff" stroke-width="3.5" stroke-linecap="round"/>';
+      // bracket "a" — left of the vertical leg
+      var bax = 185;
+      h += '<line x1="' + bax + '" y1="' + ay + '" x2="' + bax + '" y2="' + by + '" stroke="' + dim + '" stroke-width="2"/>';
+      h += '<line x1="' + (bax - 6) + '" y1="' + ay + '" x2="' + (bax + 6) + '" y2="' + ay + '" stroke="' + dim + '" stroke-width="2"/>';
+      h += '<line x1="' + (bax - 6) + '" y1="' + by + '" x2="' + (bax + 6) + '" y2="' + by + '" stroke="' + dim + '" stroke-width="2"/>';
+      h += '<text x="' + (bax - 12) + '" y="' + ((ay + by) / 2 + 7) + '" font-size="20" font-style="italic" font-weight="700" fill="#333" text-anchor="end">a</text>';
+      // bracket "b" — below the horizontal leg
+      var bby = 332, bmid = (ax + bx) / 2;
+      h += '<line x1="' + ax + '" y1="' + bby + '" x2="' + (bmid - 16) + '" y2="' + bby + '" stroke="' + dim + '" stroke-width="2"/>';
+      h += '<line x1="' + (bmid + 16) + '" y1="' + bby + '" x2="' + bx + '" y2="' + bby + '" stroke="' + dim + '" stroke-width="2"/>';
+      h += '<line x1="' + ax + '" y1="' + (bby - 6) + '" x2="' + ax + '" y2="' + (bby + 6) + '" stroke="' + dim + '" stroke-width="2"/>';
+      h += '<line x1="' + bx + '" y1="' + (bby - 6) + '" x2="' + bx + '" y2="' + (bby + 6) + '" stroke="' + dim + '" stroke-width="2"/>';
+      h += '<text x="' + bmid + '" y="' + (bby + 8) + '" font-size="20" font-style="italic" font-weight="700" fill="#333" text-anchor="middle">b</text>';
+      // bracket along the hypotenuse (parallel, offset up-right) + ">a, >b"
+      h += '<line x1="225" y1="160" x2="420" y2="285" stroke="' + dim + '" stroke-width="2"/>';
+      h += '<line x1="221" y1="166" x2="229" y2="154" stroke="' + dim + '" stroke-width="2"/>';
+      h += '<line x1="416" y1="291" x2="424" y2="279" stroke="' + dim + '" stroke-width="2"/>';
+      h += '<text x="318" y="232" font-size="15" font-weight="700" fill="#4255ff" text-anchor="middle">&gt;a, &gt;b</text>';
+      // the two points
+      h += '<circle cx="' + ax + '" cy="' + ay + '" r="7" fill="#4255ff"/>';
+      h += '<circle cx="' + bx + '" cy="' + by + '" r="7" fill="#e8901b"/>';
+      svg.innerHTML = h;
+    }
+    var SUM_HEAD = function () { return LESSON.summary.head; };
+    var SUM_BODY = function () { return LESSON.summary.body; };
+    function showSummary() {
+      document.body.classList.add('summary-mode');
+      document.body.classList.remove('chat-open'); chat.hidden = true;   // takeaway leads as the heading; chat is openable
+      interactive = false;
+      document.querySelector('.lp-question').textContent = disp(SUM_HEAD());   // takeaway as the top-center heading
+      document.getElementById('summaryText').textContent = disp(SUM_BODY());
+      renderSummary();
+      renderBubbleChips();        // preset Q&A as a centered chip row under the diagram
+      check.className = 'lp-check summary'; check.disabled = false; check.textContent = T('Continue', '继续');
+      document.getElementById('startover').hidden = true;
+      sugWrap.innerHTML = '';
+      hideFeedback();
+      setProgress(TOTAL_STEPS);   // summary is the 3rd (final) step → fill all three
+      summaryChat();
+    }
+    /* preset Q&A shown as a visible chip strip under the floating bubble (summary) */
+    function renderBubbleChips() {
+      var wrap = document.getElementById('bubbleChips');
+      wrap.innerHTML = '';
+      summaryChips().forEach(function (p) {
+        if (usedQs[p.id]) return;
+        var b = document.createElement('button');
+        b.type = 'button'; b.className = 'lp-chip'; b.textContent = disp(p.q);
+        b.addEventListener('click', function () { usedQs[p.id] = true; openChat(); sendMessage(p.q, p.a); renderBubbleChips(); renderSummaryChips(); });
+        wrap.appendChild(b);
+      });
+    }
+    /* populate the chat thread so it's ready when the user opens it (no auto-open now) */
+    function summaryChat() {
+      var oldActive = msgs.querySelector('.lp-msg.is-active');
+      if (oldActive) { oldActive.classList.remove('is-active'); oldActive.classList.add('is-tutor'); }
+      function add(p, style) {
+        var en = (p && typeof p === 'object') ? p.en : p, zh = (p && typeof p === 'object') ? p.zh : p;
+        var d = document.createElement('div');
+        d.className = 'lp-msg ' + style;
+        d.setAttribute('data-en', en); d.setAttribute('data-zh', zh);
+        d.textContent = T(en, zh);
+        msgs.appendChild(d); msgs.scrollTop = msgs.scrollHeight;
+      }
+      setTimeout(function () { add(SUM_HEAD(), 'is-faded'); }, 350);
+      setTimeout(function () { add(SUM_BODY(), 'is-faded'); }, 1500);
+      setTimeout(function () { var t = showTyping(); setTimeout(function () { t.remove(); add(P('Does that make sense?', '理解了吗？'), 'is-active'); renderSummaryChips(); }, 700); }, 3000);
+    }
+    /* preset questions for the summary chat (lesson-specific when provided) */
+    function summaryChips() {
+      if (LESSON.summary.chips) return LESSON.summary.chips;
+      return [
+        { id: 's_find', q: P("How do I find the separation?", "怎么求间距？"), a: P("Subtract the coordinates: the horizontal separation is the difference in x, the vertical separation is the difference in y. Here that's 3 across and 2 up.", "用坐标相减：水平间距是 x 之差，垂直间距是 y 之差。这里是横向 3、纵向 2。") },
+        { id: 's_h3', q: P("Why is the horizontal 3?", "为什么水平是 3？"),      a: P("The x-coordinates are −1 and 2, and 2 − (−1) = 3, so the points are 3 units apart horizontally.", "两个 x 坐标是 −1 和 2，2 − (−1) = 3，所以两点水平相距 3 格。") },
+        { id: 's_v2', q: P("Why is the vertical 2?", "为什么垂直是 2？"),        a: P("The y-coordinates are 3 and 1, and 3 − 1 = 2, so the points are 2 units apart vertically.", "两个 y 坐标是 3 和 1，3 − 1 = 2，所以两点垂直相距 2 格。") },
+        { id: 's_ok', q: P("Yes, that makes sense", "嗯，明白了"),         a: P("Great! Press Continue to finish the lesson.", "太好了！点「继续」完成本节。") }
+      ];
+    }
+    function renderSummaryChips() {
+      sugWrap.innerHTML = '';
+      summaryChips().forEach(function (p) {
+        if (usedQs[p.id]) return;
+        var b = document.createElement('button');
+        b.type = 'button'; b.className = 'lp-chip'; b.textContent = disp(p.q);
+        b.addEventListener('click', function () { usedQs[p.id] = true; sendMessage(p.q, p.a); renderBubbleChips(); renderSummaryChips(); });
+        sugWrap.appendChild(b);
+      });
+    }
+
+    /* ----- adaptive practice + misconception diagnostics (rules-driven demo) ----- */
+    var LEARNING_EVENTS_KEY = 'sy_learning_events';
+    var MISCONCEPTIONS_KEY = 'sy_misconceptions';
+    var MAX_GENERATED = 2;
+    var BASE_QUESTIONS = QUESTIONS.slice();
+    var learning = {
+      attempts: 0,
+      correctStreak: 0,
+      difficulty: 1,
+      lastDiagnosis: null,
+      misconceptionCounts: readJSON(MISCONCEPTIONS_KEY, {}),
+      generatedCount: 0,
+      socraticStep: 0,
+      currentSocraticStep: 0
+    };
+
+    function readJSON(key, fallback) {
+      try { var raw = localStorage.getItem(key); return raw ? JSON.parse(raw) : fallback; }
+      catch (e) { return fallback; }
+    }
+    function writeJSON(key, value) {
+      try { localStorage.setItem(key, JSON.stringify(value)); } catch (e) {}
+    }
+    function coordShort(x, y) { return '(' + fmt(x) + ', ' + fmt(y) + ')'; }
+    function clonePoint(p) { return [p[0], p[1]]; }
+    function normalizeQuestion(q, idx) {
+      var copy = {};
+      for (var k in q) copy[k] = q[k];
+      copy.id = copy.id || (LESSON.id + '-q' + (idx + 1));
+      copy.difficulty = copy.difficulty || 1;
+      copy.baseIndex = idx;
+      if (copy.type === 'select') {
+        copy.ref = clonePoint(copy.ref);
+        copy.options = copy.options.map(clonePoint);
+      } else {
+        copy.short = copy.short || coordShort(copy.x, copy.y);
+      }
+      return copy;
+    }
+    QUESTIONS = QUESTIONS.map(function (q, i) { return normalizeQuestion(q, i); });
+    ANSWER = QUESTIONS[0];
+    TOTAL_STEPS = totalSteps();
+
+    function totalSteps() { return QUESTIONS.length + 1; }
+    function setProgress(done) {
+      TOTAL_STEPS = totalSteps();
+      document.getElementById('barFill').style.width = Math.max(8, Math.round(done / TOTAL_STEPS * 100)) + '%';
+      for (var k = 1; k <= 3; k++) {
+        var d = document.getElementById('dot' + k);
+        if (d) d.classList.toggle('is-done', k <= Math.ceil(done / TOTAL_STEPS * 3));
+      }
+    }
+
+    var DIAG = {
+      correct: { id: 'correct', label: P('correct', '正确'), feedback: P('Correct.', '正确。'), socratic: P('What made it work?', '为什么这样可行？') },
+      swapped_xy: { id: 'swapped_xy', label: P('swapped x and y', 'x/y 顺序反了'), feedback: P('The numbers are right, but the order may be swapped. Which number should control the horizontal move?', '数字接近对了，但顺序可能反了。哪个数字应该控制水平移动？'), socratic: P('In (x, y), which coordinate comes first?', '在 (x, y) 里，哪个坐标先来？') },
+      wrong_x_direction: { id: 'wrong_x_direction', label: P('wrong x-direction', 'x 方向反了'), feedback: P('The y-position is close, but the x-direction seems flipped. Does a negative x move left or right?', 'y 位置接近，但 x 方向像是反了。负的 x 是向左还是向右？'), socratic: P('Look only at the first number: should the point land left or right of the y-axis?', '只看第一个数：点应该落在 y 轴左边还是右边？') },
+      wrong_y_direction: { id: 'wrong_y_direction', label: P('wrong y-direction', 'y 方向反了'), feedback: P('The x-position is close, but the y-direction seems flipped. Does a negative y move up or down?', 'x 位置接近，但 y 方向像是反了。负的 y 是向上还是向下？'), socratic: P('Look only at the second number: should the point land above or below the x-axis?', '只看第二个数：点应该落在 x 轴上方还是下方？') },
+      x_only: { id: 'x_only', label: P('stopped after x-move', '只完成 x 移动'), feedback: P('You matched the x-coordinate, then stopped before finishing the y-move. What does the second number ask you to do?', '你对准了 x 坐标，但还没完成 y 移动。第二个数要求你做什么？'), socratic: P('After you move left or right, what vertical move is still missing?', '左右移动之后，还缺少哪一步上下移动？') },
+      y_only: { id: 'y_only', label: P('started with y-move', '只完成 y 移动'), feedback: P('You matched the y-coordinate, but the x-move is missing. Which number should you handle first?', '你对准了 y 坐标，但少了 x 移动。应该先处理哪个数？'), socratic: P('What should happen before you move up or down?', '在上下移动之前，应该先做什么？') },
+      both_components_off: { id: 'both_components_off', label: P('both coordinate components', '两个坐标分量都偏了'), feedback: P('Both coordinates need another look. Can you separate the horizontal move from the vertical move?', '两个坐标都需要再看一遍。你能把水平移动和垂直移动分开吗？'), socratic: P('What is the first move from the origin, and what is the second move?', '从原点出发，第一步是什么，第二步是什么？') },
+      single_axis_distance: { id: 'single_axis_distance', label: P('single-axis distance comparison', '只比较单轴距离'), feedback: P('Which direction did you compare first: sideways, vertical, or both?', '你刚才先比较的是哪个方向：横向、纵向，还是两个方向都比较了？'), socratic: P('Which gap did you compare: sideways, vertical, or both?', '你比较的是哪个间距：横向、纵向，还是两个都比较了？') },
+      missed_diagonal: { id: 'missed_diagonal', label: P('missed diagonal distance', '忽略对角距离'), feedback: P('From the orange point, which candidate moves both sideways and vertically?', '从橙色点出发，哪个候选点同时有横向移动和纵向移动？'), socratic: P('Which option has a gap in both directions from the orange point?', '哪个选项相对橙色点在两个方向上都有间距？') },
+      compared_one_dimension_only: { id: 'compared_one_dimension_only', label: P('one-dimension-only comparison', '只看一个维度'), feedback: P('Did you count one gap, or did you count both the sideways and vertical gaps?', '你数的是一个方向的间距，还是横向和纵向两个间距都数了？'), socratic: P('If a point is far sideways and far vertically, what kind of path does that make?', '如果一个点横向远、纵向也远，它会形成怎样的一条路径？') },
+      picked_shorter_combined_gap: { id: 'picked_shorter_combined_gap', label: P('shorter combined gap', '组合间距较短'), feedback: P('Compare the horizontal and vertical gaps together. Which choice has the larger pair?', '把水平间距和垂直间距放在一起比较。哪个选项这一对间距更大？'), socratic: P('Which candidate gives you the larger horizontal-and-vertical pair?', '哪个候选点给出的水平加垂直这一对间距更大？') }
+    };
+
+    function diagnoseCoordinate(q, w, ok) {
+      if (ok) return DIAG.correct;
+      if (w.x === q.y && w.y === q.x && q.x !== q.y) return DIAG.swapped_xy;
+      if (w.y === q.y && w.x === -q.x && q.x !== 0) return DIAG.wrong_x_direction;
+      if (w.x === q.x && w.y === -q.y && q.y !== 0) return DIAG.wrong_y_direction;
+      if (w.x === q.x && w.y !== q.y) return DIAG.x_only;
+      if (w.y === q.y && w.x !== q.x) return DIAG.y_only;
+      return DIAG.both_components_off;
+    }
+    function diagnoseSelect(q, selectedIdx, ok) {
+      if (ok) return DIAG.correct;
+      var best = farthestIndex(q), chosen = q.options[selectedIdx] || q.options[0], correct = q.options[best];
+      var sdx = Math.abs(chosen[0] - q.ref[0]), sdy = Math.abs(chosen[1] - q.ref[1]);
+      var cdx = Math.abs(correct[0] - q.ref[0]), cdy = Math.abs(correct[1] - q.ref[1]);
+      if ((sdx === cdx && sdy < cdy) || (sdy === cdy && sdx < cdx)) return DIAG.single_axis_distance;
+      if ((sdx > 0 && sdy === 0) || (sdy > 0 && sdx === 0)) return DIAG.compared_one_dimension_only;
+      if (dist2(chosen, q.ref) < dist2(correct, q.ref)) return DIAG.picked_shorter_combined_gap;
+      return DIAG.missed_diagonal;
+    }
+    function currentSubmittedAnswer() {
+      if (ANSWER.type === 'select') return { optionIndex: selIdx, point: selIdx >= 0 ? clonePoint(ANSWER.options[selIdx]) : null };
+      return { x: cx, y: cy };
+    }
+    function currentExpectedAnswer() {
+      if (ANSWER.type === 'select') { var idx = farthestIndex(ANSWER); return { optionIndex: idx, point: clonePoint(ANSWER.options[idx]) }; }
+      return { x: ANSWER.x, y: ANSWER.y };
+    }
+    function recordLearningEvent(correct, diagnosis, submitted) {
+      var events = readJSON(LEARNING_EVENTS_KEY, []);
+      events.push({ lessonId: LESSON.id, questionId: ANSWER.id, type: ANSWER.type || 'coordinate', answer: submitted, expected: currentExpectedAnswer(), correct: correct, diagnosisId: diagnosis.id, difficulty: learning.difficulty, timestamp: new Date().toISOString() });
+      writeJSON(LEARNING_EVENTS_KEY, events.slice(-100));
+      if (!correct && diagnosis && diagnosis.id !== 'correct') {
+        learning.misconceptionCounts[diagnosis.id] = (learning.misconceptionCounts[diagnosis.id] || 0) + 1;
+        writeJSON(MISCONCEPTIONS_KEY, learning.misconceptionCounts);
+      }
+    }
+    function makeCoordinateQuestion(x, y, id, source) {
+      return normalizeQuestion({ id: 'generated-' + id + '-' + (learning.generatedCount + 1), adaptive: true, source: source, difficulty: learning.difficulty, prompt: 'Place a point at the coordinates ' + coordShort(x, y) + '.', zh: '在坐标 ' + coordShort(x, y) + ' 处放置一个点。', short: coordShort(x, y), x: x, y: y }, QUESTIONS.length);
+    }
+    function generateCoordinateForDiagnosis(id) {
+      var byDiag = {
+        swapped_xy: [[3, -1], [-4, 2], [1, -3]], wrong_x_direction: [[-3, 2], [4, -1], [-2, -3]], wrong_y_direction: [[2, -3], [-1, 4], [3, -2]], x_only: [[-2, 3], [4, -2]], y_only: [[3, -2], [-4, 1]], challenge: [[-4, 3], [4, -3], [-3, -2]], both_components_off: [[-2, 2], [3, -3]]
+      };
+      var pool = byDiag[id] || byDiag.both_components_off;
+      var p = pool[Math.min(learning.generatedCount, pool.length - 1)];
+      if (learning.difficulty >= 3 && id !== 'swapped_xy') p = byDiag.challenge[learning.generatedCount % byDiag.challenge.length];
+      return makeCoordinateQuestion(p[0], p[1], id || 'mixed', id || 'mixed');
+    }
+    function makeSelectQuestion(ref, options, id, source) {
+      return normalizeQuestion({ id: 'generated-' + id + '-' + (learning.generatedCount + 1), adaptive: true, source: source, difficulty: learning.difficulty, type: 'select', prompt: 'Select the point farthest from the highlighted point.', zh: '选出离高亮点最远的那个点。', ref: ref, options: options }, QUESTIONS.length);
+    }
+    function generateSelectForDiagnosis(id) {
+      var pools = {
+        single_axis_distance: [{ ref: [0, 0], options: [[4, 0], [0, 4], [3, 3]] }],
+        compared_one_dimension_only: [{ ref: [-1, 1], options: [[3, 1], [-1, -3], [2, -2]] }],
+        picked_shorter_combined_gap: [{ ref: [1, -1], options: [[3, 1], [-2, -3], [-1, 2]] }],
+        challenge: [{ ref: [-2, 2], options: [[2, 2], [-2, -2], [2, -1]] }],
+        missed_diagonal: [{ ref: [0, 0], options: [[0, 3], [3, 0], [2, -3]] }]
+      };
+      var pool = pools[id] || pools.missed_diagonal;
+      var pick = pool[learning.generatedCount % pool.length];
+      if (learning.difficulty >= 3 && id !== 'single_axis_distance') pick = pools.challenge[0];
+      return makeSelectQuestion(clonePoint(pick.ref), pick.options.map(clonePoint), id || 'missed_diagonal', id || 'missed_diagonal');
+    }
+    function generateAdaptiveQuestion(diagnosisId) {
+      if (learning.generatedCount >= MAX_GENERATED) return null;
+      if (LESSON.id === 'combining' || ANSWER.type === 'select') return generateSelectForDiagnosis(diagnosisId || 'missed_diagonal');
+      return generateCoordinateForDiagnosis(diagnosisId || 'both_components_off');
+    }
+    function insertAdaptiveQuestion(q) {
+      if (!q || learning.generatedCount >= MAX_GENERATED) return false;
+      QUESTIONS.splice(qIndex + 1, 0, q);
+      learning.generatedCount += 1;
+      TOTAL_STEPS = totalSteps();
+      return true;
+    }
+    function updateAdaptivePlan(correct, diagnosis) {
+      var submitted = currentSubmittedAnswer();
+      learning.attempts += 1;
+      learning.lastDiagnosis = diagnosis;
+      recordLearningEvent(correct, diagnosis, submitted);
+      if (correct) {
+        learning.correctStreak += 1;
+        learning.difficulty = Math.min(3, learning.difficulty + (learning.correctStreak >= 2 ? 1 : 0));
+        if (ANSWER.type === 'select') { learning.socraticStep = 0; learning.currentSocraticStep = 0; }
+        if (ANSWER._queuedAdaptive) { insertAdaptiveQuestion(ANSWER._queuedAdaptive); ANSWER._queuedAdaptive = null; }
+        else if (learning.correctStreak >= 2 && !ANSWER.adaptive && learning.generatedCount < MAX_GENERATED) { insertAdaptiveQuestion(generateAdaptiveQuestion('challenge')); learning.correctStreak = 0; }
+      } else {
+        learning.correctStreak = 0;
+        learning.difficulty = Math.max(1, learning.difficulty - 1);
+        if (ANSWER.type === 'select') { learning.currentSocraticStep = Math.min(2, learning.socraticStep || 0); learning.socraticStep = Math.min(2, learning.currentSocraticStep + 1); }
+        if (learning.generatedCount < MAX_GENERATED) ANSWER._queuedAdaptive = generateAdaptiveQuestion(diagnosis.id);
+      }
+    }
+    function adaptiveBeforeCheck() {
+      if (check.disabled || document.body.classList.contains('summary-mode') || check.classList.contains('is-correct')) return;
+      var correct = false, diagnosis;
+      if (ANSWER.type === 'select') { correct = (selIdx === selCorrect); diagnosis = diagnoseSelect(ANSWER, selIdx, correct); }
+      else { correct = (cx === ANSWER.x && cy === ANSWER.y); diagnosis = diagnoseCoordinate(ANSWER, { x: cx, y: cy }, correct); }
+      updateAdaptivePlan(correct, diagnosis);
+    }
+    check.addEventListener('click', adaptiveBeforeCheck, true);
+
+    function selectSocraticPrompt(step) {
+      var prompts = [
+        P('Which direction did you compare first?', '你刚才先比较的是哪个方向？'),
+        P('Look from the orange point: which candidate moves sideways and vertically?', '从橙色点看，哪个候选点同时横向移动、也纵向移动？'),
+        P('Try the point that creates both a horizontal leg and a vertical leg.', '试试那个同时形成水平边和垂直边的点。')
+      ];
+      return prompts[Math.max(0, Math.min(2, step || 0))];
+    }
+    function selectSocraticAnswer(step) {
+      var answers = [
+        P('Start by naming the direction you used. Was it only sideways, only vertical, or both?', '先说出你刚才用了哪个方向：只看横向、只看纵向，还是两个方向都看？'),
+        P('Check each candidate from the orange point. Which one has a sideways gap and a vertical gap?', '从橙色点逐个检查候选点。哪一个既有横向间距，也有纵向间距？'),
+        P('Reason it out in order: compare sideways gaps, compare vertical gaps, then ask which point makes the diagonal path.', '按顺序推理：先比较横向间距，再比较纵向间距，然后问哪个点形成了对角路径。')
+      ];
+      return answers[Math.max(0, Math.min(2, step || 0))];
+    }
+    function showFeedback(ok) {
+      var diagnosis = learning.lastDiagnosis || DIAG.both_components_off;
+      fb.className = 'lp-feedback show ' + (ok ? 'correct' : 'wrong');
+      fbIcon.innerHTML = ok ? TICK : CROSS;
+      fbTitle.textContent = ok ? T('Correct!', '答对了！') : T('Let’s reason it out', '我们推理一下');
+      if (ok) {
+        if (ANSWER.type === 'select') fbMsg.textContent = T('Correct. What made that one farther than the single-direction choices?', '答对了。它为什么比只在一个方向上远的选项更远？');
+        else {
+          var next = ANSWER._queuedAdaptive ? T(' I’ll add one quick practice next.', ' 接下来我会加一道针对练习。') : '';
+          fbMsg.textContent = T('Nice work — that answer is right.' + next, '做得好 —— 这个答案是对的。' + next);
+        }
+      } else {
+        fbMsg.textContent = ANSWER.type === 'select' ? disp(selectSocraticPrompt(learning.currentSocraticStep)) : disp(diagnosis.feedback);
+      }
+      fbBtn.textContent = ok ? T('Continue', '继续') : T('Got it', '知道了');
+      if (fbTimer) clearTimeout(fbTimer);
+      fbTimer = setTimeout(hideFeedback, 2000);
+    }
+    function diagnosisText(w) {
+      var diagnosis = learning.lastDiagnosis || diagnoseCoordinate(ANSWER, w, false);
+      return diagnosis.feedback;
+    }
+    function explainAndRedo() {
+      var w = wrongAns || { x: cx, y: cy };
+      addMsg(diagnosisText(w), 'tutor');
+      addMsg((learning.lastDiagnosis || DIAG.both_components_off).socratic, 'tutor');
+      setPoint(0, 0); placed = false;
+      check.className = 'lp-check'; check.disabled = true; check.textContent = T('Check', '检查');
+      document.getElementById('startover').hidden = true;
+      hideFeedback();
+      playDemo(w);
+    }
+    function tutorAuto(ok) {
+      openChat();
+      var diagnosis = learning.lastDiagnosis || DIAG.both_components_off;
+      if (ANSWER.type === 'select') {
+        reply(ok ? P('Good. What did you notice about the two gaps?', '很好。你注意到两个方向的间距有什么不同了吗？') : selectSocraticPrompt(learning.currentSocraticStep));
+        return;
+      }
+      reply(ok ? P('Good. I am adjusting the next practice based on that answer.', '很好。我会根据这个答案调整下一步练习。') : diagnosis.socratic);
+    }
+    function replies() {
+      var diagnosis = learning.lastDiagnosis;
+      if (diagnosis && diagnosis.id !== 'correct') {
+        if (ANSWER.type === 'select') return [selectSocraticPrompt(learning.currentSocraticStep), selectSocraticAnswer(learning.currentSocraticStep), diagnosis.feedback];
+        return [diagnosis.socratic, diagnosis.feedback, P('Try breaking the problem into one horizontal move and one vertical move.', '试着把问题拆成一次水平移动和一次垂直移动。')];
+      }
+      return [
+        P('Good question. Start by naming the horizontal gap, then the vertical gap.', '好问题。先说出水平间距，再说出垂直间距。'),
+        P('What does the first number or first gap tell you before you look at the second?', '在看第二个数或第二段间距之前，第一个告诉你什么？'),
+        P('Use the diagram as evidence: which move can you prove from the grid?', '把图当作证据：你能从网格中证明哪一步移动？')
+      ];
+    }
+    function targetedChipsFor(q) {
+      var d = learning.lastDiagnosis;
+      if (!d || d.id === 'correct') return [];
+      if (q.type === 'select') {
+        var step = learning.currentSocraticStep || 0;
+        return [
+          { id: 'diag-direction', q: P('Which direction did I compare?', '我刚才比较了哪个方向？'), a: selectSocraticAnswer(0) },
+          { id: 'diag-both', q: P('Did I check both gaps?', '我检查了两个间距吗？'), a: selectSocraticAnswer(1) },
+          { id: 'diag-reason', q: P('Can I reason it out step by step?', '我能一步步推出来吗？'), a: selectSocraticAnswer(step) }
+        ];
+      }
+      return [
+        { id: 'diag-axis', q: P('Which axis should I check first?', '我应该先看哪条轴？'), a: P('Start with x: the first number moves left or right. Only then use y to move up or down.', '先看 x：第一个数决定向左或向右。然后才用 y 上下移动。') },
+        { id: 'diag-focus', q: P('What concept am I stuck on?', '我卡在哪个概念？'), a: P('It looks like: ' + disp(d.label) + '. ' + disp(d.socratic), '看起来是：' + disp(d.label) + '。' + disp(d.socratic)) }
+      ];
+    }
+    function chipSetsFor(q) {
+      var c = q.short, xpE = xPhraseE(q.x), xpZ = xPhraseZ(q.x), ypE = yPhraseE(q.y), ypZ = yPhraseZ(q.y);
+      var last = (qIndex >= QUESTIONS.length - 1);
+      return {
+        initial: [
+          { id: 'show', q: P('Show me how', '演示一下'), demo: true, a: P('Sure — let’s go one step at a time. Tap Next after each step.', '好的 —— 我们一步一步来。每一步后点“下一步”。') },
+          { id: 'read', q: P('How do I read coordinates?', '坐标怎么读？'), a: P('Coordinates are written (x, y): first move horizontally on x, then vertically on y.', '坐标写作 (x, y)：先沿 x 轴水平移动，再沿 y 轴垂直移动。') },
+          { id: 'xgo', q: P('Where does the x go?', 'x 往哪走？'), a: P('For ' + c + ', x means move ' + xpE + '.', '对于 ' + c + '，x 表示' + xpZ + '。') },
+          { id: 'ygo', q: P('Where does the y go?', 'y 往哪走？'), a: P('After x, y means move ' + ypE + '.', '走完 x 之后，y 表示' + ypZ + '。') }
+        ],
+        wrong: targetedChipsFor(q).concat([
+          { id: 'show', q: P('Guide me step by step', '一步步引导我'), demo: true, a: P('Let’s rebuild it from the origin.', '我们从原点重新搭起来。') },
+          { id: 'wrong', q: P('What did I do wrong?', '我哪里错了？'), diagnose: true }
+        ]),
+        correct: [
+          { id: 'why', q: P('Why does that work?', '为什么这样是对的？'), a: P('Because the first coordinate fixes the horizontal position and the second fixes the vertical position.', '因为第一个坐标确定水平位置，第二个坐标确定垂直位置。') },
+          { id: 'whatnext', q: P('What’s next?', '接下来呢？'), a: last ? P('That was the last planned point — press Continue to finish or see the adaptive recap.', '这是最后一个计划点 —— 点“继续”完成或查看自适应总结。') : P('Press Continue. I may add a short targeted practice if your answers suggest it.', '点“继续”。如果你的答案显示需要，我会加一道针对练习。') }
+        ]
+      };
+    }
+    function selectChipsFor(q) {
+      return {
+        initial: [
+          { id: 'cmp', q: P('How do I compare distances?', '怎么比较远近？'), a: P('Before deciding, ask yourself: what is the sideways gap, and what is the vertical gap?', '决定之前先问自己：横向间距是多少？垂直间距是多少？') },
+          { id: 'hint', q: P('Give me a hint', '给点提示'), a: P('Pick one candidate and count both gaps from the orange point. Then do the same for the next candidate.', '选一个候选点，从橙色点开始数两个方向的间距。然后对下一个候选点做同样的事。') }
+        ],
+        wrong: targetedChipsFor(q),
+        correct: [
+          { id: 'whyf', q: P('What made that one farther?', '它为什么更远？'), a: P('What did you notice: did it use one gap, or did it use both a sideways and vertical gap?', '你观察到了什么：它只用了一个方向的间距，还是同时用了横向和纵向间距？') }
+        ]
+      };
+    }
+    loadQuestion(0);
+
+    /* re-translate the live (JS-driven) text + chat history when the language is toggled */
+    document.addEventListener('sy:lang', function () {
+      if (document.body.classList.contains('summary-mode')) {
+        document.querySelector('.lp-question').textContent = disp(SUM_HEAD());
+        var st = document.getElementById('summaryText'); if (st) st.textContent = disp(SUM_BODY());
+        if (!check.disabled) check.textContent = T('Continue', '继续');
+      } else {
+        document.querySelector('.lp-question').textContent = qText(ANSWER);
+        check.textContent = check.classList.contains('is-correct') ? T('Continue', '继续') : T('Check', '检查');
+      }
+      refreshBubble();                                     // localize the floating bubble text
+      updateGridLabel();                                   // localize the grid's a11y label
+      retranslateChat();                                   // re-translate already-posted chat bubbles
+      if (demoRunning) {                                   // mid-demo: just relabel the Next/Got it chip in place
+        var nc = sugWrap.querySelector('.lp-chip--next');
+        if (nc) nc.textContent = /明白|Got/.test(nc.textContent) ? T('Got it', '明白了') : T('Next', '下一步');
+      } else if (document.body.classList.contains('summary-mode')) {
+        renderSummaryChips(); renderBubbleChips();         // re-render summary chips (panel + strip) in the new language
+      } else if (chipSets) {
+        chipSets = (ANSWER.type === 'select') ? selectChipsFor(ANSWER) : chipSetsFor(ANSWER);
+        renderChips();                                     // re-render Q&A chips (used ones stay hidden by id)
+      }
+    });
+
+    /* ----- start over ----- */
+    document.getElementById('startover').addEventListener('click', function () {
+      placed = false;
+      setPoint(0, 0);
+      hint.style.display = '';
+      var dm = document.getElementById('demo'); if (dm) dm.remove(); demoRunning = false;
+      this.hidden = true;
+      check.className = 'lp-check'; check.disabled = true; check.textContent = T('Check', '检查');
+      hideFeedback();
+      setProgress(qIndex);
+      usedQs = {};
+      setChatState('initial');
+    });
+  })();
+  </script>
+</body>
+</html>
